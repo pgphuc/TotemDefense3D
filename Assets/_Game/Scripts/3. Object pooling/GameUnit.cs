@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,28 @@ public class GameUnit : MonoBehaviour
 {
     [SerializeField] public PoolType poolType;
     public List<ComponentBase> components = new List<ComponentBase>();
+    
+    
+    
+    #region event implementation
+    
+    public event Action<GameUnit> OnDeath;
+    public void SubDeathEvent(GameUnit unit)
+    {
+        unit.OnDeath += OnTargetDeath;
+    }
+
+    private void UnSubDeathEvent(GameUnit unit)
+    {
+        unit.OnDeath -= OnTargetDeath;
+    }
+
+    protected virtual void OnTargetDeath(GameUnit unit)
+    {
+        UnSubDeathEvent(unit);
+    }
+    
+    #endregion
 
     public virtual void Awake()
     {
@@ -32,6 +55,7 @@ public class GameUnit : MonoBehaviour
     
     public virtual void OnDespawn()
     {
+        OnDeath?.Invoke(this);
         SimplePool.Despawn(this);
     }
 

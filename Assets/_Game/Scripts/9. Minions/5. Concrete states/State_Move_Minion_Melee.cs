@@ -25,17 +25,12 @@ public class State_Move_Minion_Melee : StateBase<MinionMeleeBase>
     {
         base.OnFrameUpdate();
         _unit._moveComponent.Moving();
-        if (_unit._moveComponent._dualingTarget == null || !_unit._moveComponent._dualingTarget._isActive)
+        if (_unit._moveComponent._dualingTarget == null && _unit._moveComponent._isMovingToEnemy)
         {
-            _unit._attackSightCheck.HandleExit();
-            _unit._attackMeleeCheck.HandleExit();
+            _unit._moveComponent.StartMoving();
         }
-        if (_unit._attackMeleeCheck.IsOwnerInCheck)
+        if (_unit._moveComponent.ReadyToAttack())
         {
-            if (_unit.movingType == MovingType.AfterMatch)
-            {
-                _unit.movingType = MovingType.Defending;
-            }
             _unit.StateMachine.ChangeState(_unit.AttackState);
         }
     }
@@ -43,6 +38,16 @@ public class State_Move_Minion_Melee : StateBase<MinionMeleeBase>
     public override void OnPhysicsUpdate()
     {
         base.OnPhysicsUpdate();
+        if (_unit._moveComponent._dualingTarget != null)
+            return;
+        if (_unit._checkComponent.HasAvailableTarget())
+        {
+            _unit._moveComponent.MoveToEnemy();
+        }
+        else
+        {
+            _unit._moveComponent.CheckMovingType();
+        }
     }
 
     public override void AnimationTriggerEvent(GameUnit.AnimationTriggerType triggerType)

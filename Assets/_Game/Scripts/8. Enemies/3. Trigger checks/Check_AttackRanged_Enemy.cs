@@ -22,14 +22,14 @@ public class Check_AttackRanged_Enemy : MonoBehaviour, ITriggerCheck
     {
         SetOwnerInCheckBool(true);
         _target = other.gameObject;
-        _attackComponent._target = ComponentCache.GetHealthComponent(other);
+        _attackComponent._attackTarget = ComponentCache.GetHealthComponent(other);
     }
     public void HandleExit()
     {
         SetOwnerInCheckBool(false);
         SetOpponentInCheckBool(false);
         _target = null;
-        _attackComponent._target = null;
+        _attackComponent._attackTarget = null;
     }
     #endregion
     

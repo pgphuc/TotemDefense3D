@@ -6,24 +6,15 @@ using UnityEngine.AI;
 public class EnemyMeleeBase : EnemyBase
 {
     [SerializeField] private string CurrentState;
-    [SerializeField] private string CurrentMoveTarget;
-    [SerializeField] private string MoveTargetisActive;
-    [SerializeField] private string AgentIsStop;
+    [SerializeField] private string readytoattack;
+    [SerializeField] private string dualingTarget;
+    [SerializeField] private string distance;
 
     public void SetState(StateBase<EnemyMeleeBase> state)
     {
         CurrentState = state.ToString();
     }
     
-    
-    
-    // #region Serialized Fields
-    // //TriggerCheck
-    // public Check_AttackMelee_Enemy _attackMeleeCheck;
-    // public Check_AttackSight_Enemy _attackSightCheck;
-    //
-    //
-    // #endregion
     
     #region variables that need instantiate at Awake [HideInInspector]
     //State machine
@@ -41,9 +32,11 @@ public class EnemyMeleeBase : EnemyBase
     public virtual void Update()
     {
         StateMachine.currentState.OnFrameUpdate();
-        CurrentMoveTarget = _moveComponent._dualingTarget?._transform.position.ToString();
-        MoveTargetisActive = _moveComponent._dualingTarget?._isActive.ToString();
-        AgentIsStop = _moveComponent._agent.isStopped.ToString();
+        readytoattack = _moveComponent.ReadyToAttackMinion().ToString();
+        if (_moveComponent._dualingTarget == null)
+            return;
+        dualingTarget = _moveComponent._dualingTarget._transform.position.ToString();
+        distance = Vector3.Distance(transform.position, _moveComponent._dualingTarget._transform.position).ToString();
     }
 
     public virtual void FixedUpdate()
@@ -70,15 +63,12 @@ public class EnemyMeleeBase : EnemyBase
         _attackComponent = new Component_Attack_Enemy(this, 3f, 1.5f);
         components.Add(_attackComponent);
         //move
-        _moveComponent = new Component_Move_Enemy(this, GetComponent<NavMeshAgent>());
-        components.Add(_moveComponent);   
+        _moveComponent = new Component_Move_Enemy(this, GetComponent<NavMeshAgent>(), 3f);
+        components.Add(_moveComponent);
     }
     public override void OnInit()
     {
         base.OnInit();
-        // //TriggerCheck
-        // _attackMeleeCheck._attackComponent = _attackComponent;
-        // _attackSightCheck._moveComponent = _moveComponent;
         //State khởi đầu
         StateMachine.Initialize(MoveState);
     }

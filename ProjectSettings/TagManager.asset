@@ -15,6 +15,7 @@ TagManager:
   - RangedEnemy
   - BomberEnemy
   - BarrackReinforceCheck
+  - TerritoryGrid
   layers:
   - Default
   - TransparentFX
@@ -23,7 +24,7 @@ TagManager:
   - Water
   - UI
   - Button
-  - 
+  - Enemy
   - 
   - 
   - 

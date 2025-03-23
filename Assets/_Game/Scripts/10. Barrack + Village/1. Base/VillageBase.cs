@@ -6,7 +6,6 @@ using UnityEngine.Serialization;
 public class VillageBase : GameUnit
 {
     public Check_Enemy_Village enemyCheck;
-    public Check_Minion_Village minionCheck;
     public Component_Health healthComponent;
     public Component_Spawner_Village spawnerComponent;
     
@@ -82,7 +81,6 @@ public class VillageBase : GameUnit
         cooldownTime = 5f;
         enemyInRange.Clear();
         enemyCheck._owner = this;
-        minionCheck._owner = this;
     }
 
     public override void InitAllComponents()

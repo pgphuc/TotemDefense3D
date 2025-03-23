@@ -13,13 +13,17 @@ public class Component_Health : ComponentBase, IComponentHealth
     public override void OnInit()
     {
         CurrentHealth = MaxHealth;
+        _isActive = true;
+        _isBlocked = false;
     }
 
-    private GameUnit _owner { get; set; }//object giữ component
+    public GameUnit _owner { get; set; }//object giữ component
     public Transform _transform { get; }
     public float MaxHealth { get; set; }
     public float CurrentHealth { get; set; }
-    public bool _isActive { get; set; } = true;
+    public bool _isActive { get; set; }
+    
+    public bool _isBlocked { get; set; }
     
     public void TakeDamage(float damage)
     {

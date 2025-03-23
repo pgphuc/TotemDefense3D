@@ -26,7 +26,7 @@ public class State_RangedAttack_Enemy_Ranged : StateBase<EnemyRangedBase>
     public override void OnFrameUpdate()
     {
         base.OnFrameUpdate();
-        if (_unit._attackComponent._target == null || !_unit._attackComponent._target._isActive)
+        if (_unit._attackComponent._attackTarget == null || !_unit._attackComponent._attackTarget._isActive)
         {
             _unit._attackMeleeCheck.HandleExit();
             _unit._attackRangedCheck.HandleExit();

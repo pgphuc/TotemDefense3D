@@ -9,10 +9,11 @@ using UnityEngine.Rendering.Universal;
 
 public class Component_Move_Minion :ComponentBase, IComponentMove
 {
-    public Component_Move_Minion(MinionBase owner, NavMeshAgent agent)
+    public Component_Move_Minion(MinionBase owner, NavMeshAgent agent, float attackRadius)
     {
         _owner = owner;
         _agent = agent;
+        _meleeRadius = attackRadius;
     }
     public override void OnInit()
     {
@@ -20,11 +21,12 @@ public class Component_Move_Minion :ComponentBase, IComponentMove
             _dualingTarget = null;
         _agent.enabled = true;
     }
-    public List<Collider> enemyInRange = new List<Collider>(); 
-    public MinionBase _owner;
+    private MinionBase _owner;
     public NavMeshAgent _agent;
     public Vector3 _target { get; set; }
     public Component_Health _dualingTarget { get; set; }
+    public float _meleeRadius { get; set; }
+    public bool _isMovingToEnemy;
     public void Moving()
     {
         _agent.destination = _target;
@@ -33,12 +35,15 @@ public class Component_Move_Minion :ComponentBase, IComponentMove
     public void StopMoving()
     {
         _agent.isStopped = true;
+        _isMovingToEnemy = false;
         _agent.velocity = Vector3.zero;
     }
 
     public void StartMoving()
     {
         _agent.isStopped = false;
+        _isMovingToEnemy = false;
+        _owner._healthComponent._isBlocked = false;
         SetMoveTarget(FindDestination());
     }
 
@@ -50,9 +55,14 @@ public class Component_Move_Minion :ComponentBase, IComponentMove
     public Vector3 FindDestination()
     {
         Vector3 destination = Vector3.zero;
-        if (enemyInRange.Count > 0)
+        if (_owner._checkComponent._isFindingUnblockedEnemy || _owner._checkComponent.HasAvailableTarget())
         {
-            destination = FindNearestEnemy();
+            _isMovingToEnemy = true;
+            ValueTuple<Component_Health, GameUnit, Component_Move_Enemy> targetTuple = _owner._checkComponent.FindNearstTarget();
+            BlockEnemy(targetTuple.Item3);
+            SubcribeDeathEvent(targetTuple.Item2);
+            _dualingTarget = targetTuple.Item1;
+            destination = targetTuple.Item1._transform.position;
         }
         else
         {
@@ -62,6 +72,15 @@ public class Component_Move_Minion :ComponentBase, IComponentMove
                     destination = FindBarrackAvailable();
                     break;
                 case MovingType.Defending:
+                    if (_dualingTarget != null)
+                    {
+                        destination = _dualingTarget._transform.position;
+                    }
+                    else 
+                    {
+                        goto case MovingType.AfterMatch;
+                    }
+                    break;
                 case MovingType.AfterMatch://Sau khi giết đc enemy
                     switch (_owner.minionType)
                     {
@@ -74,6 +93,10 @@ public class Component_Move_Minion :ComponentBase, IComponentMove
                     }
                     break;
             }
+        }
+        if (destination == Vector3.zero)
+        {
+            Debug.LogError("No destination found");
         }
         return destination;
     }
@@ -96,21 +119,6 @@ public class Component_Move_Minion :ComponentBase, IComponentMove
         return movePosition;
     }
 
-    private Vector3 FindNearestEnemy()
-    {
-        Vector3 movePosition = new Vector3();
-        float minDistance = float.MaxValue;
-        foreach (Collider target in enemyInRange)
-        {
-            float distance = Vector3.Distance(_owner.transform.position, target.transform.position);
-            if (distance < minDistance)
-            {
-                minDistance = distance;
-                movePosition = target.transform.position;
-            }
-        }
-        return movePosition;
-    }
 
     private Vector3 BackToVillage()
     {
@@ -120,6 +128,72 @@ public class Component_Move_Minion :ComponentBase, IComponentMove
     private Vector3 BackToBarrack()
     {
         return _owner.barrackSpawner.spawnerComponent.FindSurroundPoints(_owner.transform.position);
+    }
+
+    public void MoveToDefending((Component_Health, GameUnit, Component_Move_Enemy) GetDefenseData)
+    {
+        _isMovingToEnemy = true;
+        SetDefenseTarget(GetDefenseData.Item1);
+        SubcribeDeathEvent(GetDefenseData.Item2);
+        BlockEnemy(GetDefenseData.Item3);
+        
+    }
+    public void MoveToEnemy()
+    {
+        _isMovingToEnemy = true;
+        ValueTuple<Component_Health, GameUnit, Component_Move_Enemy> targetTuple = _owner._checkComponent.FindNearstTarget();
+        SetDefenseTarget(targetTuple.Item1);
+        SubcribeDeathEvent(targetTuple.Item2);
+        BlockEnemy(targetTuple.Item3);
+    }
+
+    private void SetDefenseTarget(Component_Health target)
+    {
+        _dualingTarget = target;
+        SetMoveTarget(target._transform.position);
+    }
+
+    private void SubcribeDeathEvent(GameUnit sub)
+    {
+        _owner.SubDeathEvent(sub);
+    }
+
+    private void BlockEnemy(Component_Move_Enemy enemy)
+    {
+        ValueTuple<Component_Health, GameUnit> minionTargetTuple = GetTargetComponent();
+        enemy.StopByMinion(minionTargetTuple);
+    }
+
+    private (Component_Health, GameUnit) GetTargetComponent()
+    {
+        return (_owner._healthComponent, _owner);
+    }
+    public bool ReadyToAttack()
+    {
+        return _dualingTarget != null
+                && Vector3.Distance(_owner.transform.position, _dualingTarget._transform.position) <= _meleeRadius;
+    }
+
+    public void CheckMovingType()
+    {
+        if (_owner.movingType == MovingType.Defending)
+        {
+            _owner.movingType = MovingType.AfterMatch;
+            StartMoving();
+        }
+        if (_agent.remainingDistance > _meleeRadius)
+            return;
+        switch (_owner.movingType)
+        {
+            case MovingType.AfterMatch:
+                _owner.movingType = _owner.minionType == MinionType.Village ?
+                    MovingType.ReachedVillage : MovingType.ReachedBarrack;
+                break;
+            case MovingType.Reinforcing:
+                _owner.movingType = MovingType.ReachedBarrack;
+                break;
+        }
+        _owner.OnDespawn();
     }
 }
 

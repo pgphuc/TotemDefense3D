@@ -7,6 +7,10 @@ public class MinionMeleeBase : MinionBase
 {
     #region checklog state machine
     [SerializeField] private string CurrentState;
+    [SerializeField] private string agentIsstop;
+    [SerializeField] private string readytoattack;
+    [SerializeField] private string dualingTarget;
+    [SerializeField] private string distance;
 
     public void SetState(StateBase<MinionMeleeBase> state)
     {
@@ -14,12 +18,6 @@ public class MinionMeleeBase : MinionBase
     }
     #endregion
     
-    #region Serialized Fields
-    //TriggerCheck
-    public Check_AttackMelee_Minion _attackMeleeCheck;
-    public Check_AttackSight_Minion _attackSightCheck;
-    
-    #endregion
     
     #region variables that need instantiate at Awake [HideInInspector]
     //State machine
@@ -34,6 +32,13 @@ public class MinionMeleeBase : MinionBase
     public virtual void Update()
     {
         StateMachine.currentState.OnFrameUpdate();
+        readytoattack = _moveComponent.ReadyToAttack().ToString();
+        agentIsstop = _moveComponent._agent.isStopped.ToString();
+        if (_moveComponent._dualingTarget == null)
+            return;
+        dualingTarget = _moveComponent._dualingTarget._transform.position.ToString();
+        distance = Vector3.Distance(transform.position, _moveComponent._dualingTarget._transform.position).ToString();
+            
     }
 
     public virtual void FixedUpdate()
@@ -61,17 +66,15 @@ public class MinionMeleeBase : MinionBase
         _attackComponent = new Component_Attack_Minion(this, 3f, 1.5f);
         components.Add(_attackComponent);
         //move
-        _moveComponent = new Component_Move_Minion(this, GetComponent<NavMeshAgent>());
+        _moveComponent = new Component_Move_Minion(this, GetComponent<NavMeshAgent>(), 3f);
         components.Add(_moveComponent);   
+        //check
+        _checkComponent = new Component_Check_Minion(this, transform, 5f);
+        components.Add(_checkComponent);
     }
     public override void OnInit()
     {
         base.OnInit();
-        //move
-        _moveComponent._agent.enabled = true;
-        //TriggerCheck
-        _attackMeleeCheck._attackComponent = _attackComponent;
-        _attackSightCheck._moveComponent = _moveComponent;
         //State khởi đầu
         StateMachine.Initialize(MoveState);
     }

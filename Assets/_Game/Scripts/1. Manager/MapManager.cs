@@ -12,6 +12,7 @@ public class MapManager: Singleton<MapManager>
     public Dictionary<int, Territory> territoryDictionary = new Dictionary<int, Territory>();
     public List<BarrackBase> BarrackNotFullList = new List<BarrackBase>();
     [HideInInspector] public GameObject village;
+    [HideInInspector] public Collider villageCollider;
     #endregion
     
     #region Prefab References
@@ -124,13 +125,14 @@ public class MapManager: Singleton<MapManager>
         
         if (prefab == territoryGridPrefab)
         {
-            GameObject territory = GenerateTerritoryGrid(prefab, tf);
+            GenerateTerritoryGrid(prefab, tf);
             //objects.Add(territory);
             return;
         }
         if (prefab == villageGridPrefab)
         {
             village = Instantiate(prefab, generatePosition, Quaternion.identity, tf);
+            villageCollider = village.GetComponent<Collider>();
             //objects.Add(village);
             return;
         }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -32,13 +33,21 @@ public class Component_Spawner_Village : ComponentBase
     }
     public void DefendingBase(Collider target)
     {
-        
         SpawnMinion(FindSurroundPoints(target.transform.position));
         _minion.minionType = MinionType.Village;
         _minion.movingType = MovingType.Defending;
         _minion.villageSpawner = _village;
         _minion.OnInit();
-        _minion._moveComponent.enemyInRange.Add(target);
+        
+        ValueTuple<Component_Health, GameUnit, Component_Move_Enemy> enemyData = GetDefenseData(target);
+        _minion._moveComponent.MoveToDefending(enemyData);
+    }
+
+    private (Component_Health, GameUnit, Component_Move_Enemy) GetDefenseData(Collider target)
+    {
+        return (ComponentCache.GetHealthComponent(target),
+            ComponentCache.GetGameUnit(target),
+            ComponentCache.GetEnemyMoveComponent(target));
     }
 
     public Vector3 FindSurroundPoints(Vector3 target)

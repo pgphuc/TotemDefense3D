@@ -12,7 +12,7 @@ public class State_Attack_Enemy_Melee : StateBase<EnemyMeleeBase>
     public override void OnEnter()
     {
         base.OnEnter();
-        _unit._attackComponent._lastAttackTime = Time.time;
+        _unit._attackComponent.StartAttack();
         _unit.SetState(this);
     }
 
@@ -25,15 +25,12 @@ public class State_Attack_Enemy_Melee : StateBase<EnemyMeleeBase>
     public override void OnFrameUpdate()
     {
         base.OnFrameUpdate();
-        if (_unit._attackComponent._target == null || !_unit._attackComponent._target._isActive)
+        if (_unit._attackComponent._attackTarget == null)
         {
-            //_unit._attackSightCheck.HandleExit();
-            //_unit._attackMeleeCheck.HandleExit();
-            _unit.StateMachine.ChangeState(_unit.MoveState); // Quay lại tuần tra nếu không có mục tiêu
+            _unit.StateMachine.ChangeState(_unit.MoveState); //Quay lại tuần tra nếu không có mục tiêu
         }
-        else if (Time.time - _unit._attackComponent._lastAttackTime >= _unit._attackComponent._speed)
+        else if (_unit._attackComponent.FinishCooldown())
         {
-            _unit._attackComponent._lastAttackTime = Time.time;
             _unit._attackComponent.MeleeAttack();
         }
         
@@ -42,6 +39,10 @@ public class State_Attack_Enemy_Melee : StateBase<EnemyMeleeBase>
     public override void OnPhysicsUpdate()
     {
         base.OnPhysicsUpdate();
+        if (_unit._attackComponent.IsAttackingVillage() && _unit._moveComponent.ReadyToAttackMinion())
+        {
+            _unit._attackComponent.StartAttack();
+        }
     }
 
     public override void AnimationTriggerEvent(GameUnit.AnimationTriggerType triggerType)

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,7 @@ public class MinionBase : GameUnit
 {
     public VillageBase villageSpawner;
     public BarrackBase barrackSpawner;
+    
     
     #region enum variables
     public MinionType minionType;
@@ -18,7 +20,20 @@ public class MinionBase : GameUnit
     public Component_Health _healthComponent;
     public Component_Attack_Minion _attackComponent;
     public Component_Move_Minion _moveComponent;
+    public Component_Check_Minion _checkComponent;
     
+    #endregion
+    
+    #region event implementation
+
+    protected override void OnTargetDeath(GameUnit unit)
+    {
+        _moveComponent._dualingTarget = null;
+        _attackComponent._attackTarget = null;
+        _checkComponent._targetsInRange.Remove(unit.gameObject?.GetComponent<Collider>());
+        _checkComponent._isFindingUnblockedEnemy = false;
+        base.OnTargetDeath(unit);
+    }
     #endregion
     
     public override void OnDespawn()

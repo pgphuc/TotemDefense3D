@@ -21,14 +21,14 @@ public class Check_AttackMelee_Minion : MonoBehaviour, ITriggerCheck
         SetOwnerInCheckBool(false);
         SetOpponentInCheckBool(false);
         _target = null;
-        _attackComponent._target = null;
+        _attackComponent._attackTarget = null;
     }
 
     public void HandleEnter(Collider other)
     {
         SetOwnerInCheckBool(true);
         _target = other.gameObject;
-        _attackComponent._target = ComponentCache.GetHealthComponent(other);
+        _attackComponent._attackTarget = ComponentCache.GetHealthComponent(other);
     }
     #endregion
     

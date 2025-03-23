@@ -66,72 +66,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fcc7299e770f7443a81ab48952f81a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &7060155844569246254
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3518227030266385117}
-  - component: {fileID: 3599802839902118684}
-  - component: {fileID: 6012951698241240154}
-  m_Layer: 0
-  m_Name: CheckMinion
-  m_TagString: BarrackReinforceCheck
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3518227030266385117
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7060155844569246254}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2952231356874687042}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &3599802839902118684
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7060155844569246254}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6012951698241240154
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7060155844569246254}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 43a5ec1ad09194043a4347ba66e4210f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
   _owner: {fileID: 0}
 --- !u!1 &8610357544961621266
 GameObject:
@@ -166,7 +100,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1940983903021673406}
-  - {fileID: 3518227030266385117}
   - {fileID: 2501755878843686138}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -234,9 +167,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   poolType: 8
   enemyCheck: {fileID: 4948512530511997624}
-  minionCheck: {fileID: 6012951698241240154}
+  minionCheck: {fileID: 0}
   _minionMeleePrefab: {fileID: 7630506222973659309, guid: bdc4125d660e6324ea82ebc73d3d9b27, type: 3}
   _territory: {fileID: 0}
+  defenseCount: 0
+  defenseSpawned: 0
 --- !u!1001 &2118235462029462613
 PrefabInstance:
   m_ObjectHideFlags: 0

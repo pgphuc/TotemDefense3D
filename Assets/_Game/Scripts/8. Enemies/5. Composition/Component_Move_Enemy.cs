@@ -5,40 +5,31 @@ using UnityEngine.AI;
 
 public class Component_Move_Enemy : ComponentBase, IComponentMove
 {
-    public Component_Move_Enemy(EnemyBase owner, NavMeshAgent agent)
+    public Component_Move_Enemy(EnemyBase owner, NavMeshAgent agent, float attackRadius)
     {
         _owner = owner;
         _agent = agent;
+        _meleeRadius = attackRadius;
     }
     public override void OnInit()
     {
         _dualingTarget = null;
         _agent.enabled = true;
     }
-    public List<Collider> _minionInRange = new List<Collider>();
     public EnemyBase _owner;
     public NavMeshAgent _agent;
     public Vector3 _target { get; set; }
     public Component_Health _dualingTarget { get; set; }
+    public float _meleeRadius { get; set; }
     public void Moving()
     {
         _agent.destination = _target;
-        if (!MapManager.Instance.surroundBasePoints.TryGetValue(_target, out bool isOccupied))
-        {
-            return;
-        }
-        if (isOccupied)
-        {
-            SetMoveTarget(FindDestination());
-        }
-        if (_agent.remainingDistance < 3f && _agent.remainingDistance > 0)
-        {
-            MapManager.Instance.surroundBasePoints[_target] = true;
-        }
     }
 
     public void StopMoving()
     {
+        if (!_owner.isActiveAndEnabled)
+            return;
         _agent.isStopped = true;
         _agent.velocity = Vector3.zero;
     }
@@ -46,6 +37,7 @@ public class Component_Move_Enemy : ComponentBase, IComponentMove
     public void StartMoving()
     {
         _agent.isStopped = false;
+        _owner._healthComponent._isBlocked = false;
         SetMoveTarget(FindDestination());
     }
     public void SetMoveTarget(Vector3 target)
@@ -54,9 +46,6 @@ public class Component_Move_Enemy : ComponentBase, IComponentMove
     }
     public Vector3 FindDestination()
     {
-        // Vector3 destination = new Vector3();
-        // destination = _minionInRange.Count > 0 ? FindNearestTarget() : FindSurroundBasePoint();
-        // return destination;
         Vector3 bestPoint = MapManager.Instance.village.transform.position;
         bool hasPointAvailable = MapManager.Instance.surroundBasePoints.ContainsValue(false);
         if (hasPointAvailable)
@@ -77,40 +66,41 @@ public class Component_Move_Enemy : ComponentBase, IComponentMove
         return bestPoint;
     }
 
-    public Vector3 FindSurroundBasePoint()
+    public bool IsTargetPointOccupied()
     {
-        Vector3 bestPoint = MapManager.Instance.village.transform.position;
-        bool hasPointAvailable = MapManager.Instance.surroundBasePoints.ContainsValue(false);
-        if (hasPointAvailable)
-        {
-            float minDistance = float.MaxValue;
-            foreach (KeyValuePair<Vector3, bool> surroundPoint in MapManager.Instance.surroundBasePoints)
-            {
-                if (surroundPoint.Value)
-                    continue;
-                float distanceBetweenPoints = Vector3.Distance(_owner.transform.position, surroundPoint.Key);
-                if (distanceBetweenPoints < minDistance)
-                {                                                   
-                    minDistance = distanceBetweenPoints;
-                    bestPoint = surroundPoint.Key;
-                }
-            }
-        }
-        return bestPoint;
+        return MapManager.Instance.surroundBasePoints.TryGetValue(_target, out bool isOccupied) && isOccupied;
     }
-    public Vector3 FindNearestTarget()
+
+    public bool ReadyToAttackBase()
     {
-        float minDistance = float.MaxValue;
-        Vector3 nearestTarget = MapManager.Instance.village.transform.position;
-        foreach (Collider target in _minionInRange)
+        if (!MapManager.Instance.surroundBasePoints.ContainsKey(_target))
+            return false;
+        return Vector3.Distance(_owner.transform.position , _target) <= _meleeRadius;
+    }
+    
+    public void OccupiedAttackPoint()
+    {
+        _dualingTarget = ComponentCache.GetHealthComponent(MapManager.Instance.villageCollider);
+        MapManager.Instance.surroundBasePoints[_target] = true;
+    }
+    
+
+    public void StopByMinion((Component_Health, GameUnit) GetTargetComponent)
+    {
+        StopMoving();
+        _dualingTarget = GetTargetComponent.Item1;
+        SetMoveTarget(GetTargetComponent.Item1._transform.position);
+        _owner.SubDeathEvent(GetTargetComponent.Item2);
+        
+    }
+    public bool ReadyToAttackMinion()
+    {
+        if (_dualingTarget._owner is MinionBase)
         {
-            float distance = Vector3.Distance(_owner.transform.position, target.transform.position);
-            if (distance < minDistance)
-            {
-                minDistance = distance;
-                nearestTarget = target.transform.position;
-            }
+            return _dualingTarget != null
+                   && _agent.isStopped
+                   && Vector3.Distance(_owner.transform.position, _dualingTarget._transform.position) <= _meleeRadius;
         }
-        return nearestTarget;
+        return false;
     }
 }

@@ -26,20 +26,28 @@ public class State_Move_Enemy_Melee : StateBase<EnemyMeleeBase>
     {
         base.OnFrameUpdate();
         _unit._moveComponent.Moving();
-        if (_unit._moveComponent._dualingTarget == null || !_unit._moveComponent._dualingTarget._isActive)
+        if (_unit._moveComponent._dualingTarget == null && _unit._moveComponent._agent.isStopped)
         {
-            //_unit._attackSightCheck.HandleExit();
-            //_unit._attackMeleeCheck.HandleExit();
+            _unit._moveComponent.StartMoving();
         }
-        // if (_unit._attackMeleeCheck.IsOwnerInCheck)
-        // {
-        //     _unit.StateMachine.ChangeState(_unit.AttackState);
-        // }
+        else if (_unit._moveComponent.ReadyToAttackBase())
+        {
+            _unit._moveComponent.OccupiedAttackPoint();
+            _unit.StateMachine.ChangeState(_unit.AttackState);
+        }
+        else if (_unit._moveComponent.ReadyToAttackMinion())
+        {
+            _unit.StateMachine.ChangeState(_unit.AttackState);
+        }
     }
 
     public override void OnPhysicsUpdate()
     {
         base.OnPhysicsUpdate();
+        if (_unit._moveComponent.IsTargetPointOccupied())
+        {
+            _unit._moveComponent.StartMoving();
+        }
     }
 
     public override void AnimationTriggerEvent(GameUnit.AnimationTriggerType triggerType)

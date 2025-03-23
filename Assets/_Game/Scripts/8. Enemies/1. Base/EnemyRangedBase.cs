@@ -74,7 +74,7 @@ public class EnemyRangedBase : EnemyBase
         _attackComponent = new Component_Attack_Enemy(this, 10f, 1.5f);
         components.Add(_attackComponent);
         //move
-        _moveComponent = new Component_Move_Enemy(this, GetComponent<NavMeshAgent>());
+        _moveComponent = new Component_Move_Enemy(this, GetComponent<NavMeshAgent>(), 1f);
         components.Add(_moveComponent);
     }
     public override void InitAllComponents()

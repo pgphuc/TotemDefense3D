@@ -18,7 +18,6 @@ public class BarrackBase : GameUnit
     {
         base.OnInit();
         minionCapacity = 10;
-        minionCheck._owner = this;
         enemyCheck._owner = this;
         
         //defense
@@ -35,7 +34,6 @@ public class BarrackBase : GameUnit
     #endregion
 
     [SerializeField] public Check_Enemy_Barrack enemyCheck;
-    [SerializeField] private Check_Minion_Barrack minionCheck;
     
     public GameUnit _minionMeleePrefab;
     private MinionMeleeBase _minion;

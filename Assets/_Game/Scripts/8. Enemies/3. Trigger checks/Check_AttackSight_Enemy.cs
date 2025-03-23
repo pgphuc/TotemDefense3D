@@ -42,8 +42,8 @@ public class Check_AttackSight_Enemy : MonoBehaviour, ITriggerCheck
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("MeleeMinion") || other.CompareTag("RangedMinion"))
-            _moveComponent._minionInRange.Add(other);
+        // if (other.CompareTag("MeleeMinion") || other.CompareTag("RangedMinion"))
+        //     _moveComponent._minionInRange.Add(other);
         if (IsOwnerInCheck)
             return;
         if (other.CompareTag("MeleeMinion"))
@@ -70,8 +70,8 @@ public class Check_AttackSight_Enemy : MonoBehaviour, ITriggerCheck
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("MeleeMinion") || other.CompareTag("RangedMinion"))
-            _moveComponent._minionInRange.Remove(other);
+        // if (other.CompareTag("MeleeMinion") || other.CompareTag("RangedMinion"))
+        //     _moveComponent._minionInRange.Remove(other);
         if (_target != other.gameObject) 
             return;
         if (other.CompareTag("MeleeMinion"))
