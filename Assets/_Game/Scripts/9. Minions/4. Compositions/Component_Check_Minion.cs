@@ -4,13 +4,11 @@ using UnityEngine;
 
 public class Component_Check_Minion : ComponentBase
 {
-    public Component_Check_Minion(GameUnit owner, Transform transform, float checkRadius)
+    public Component_Check_Minion(Transform transform, float checkRadius)
     {
-        _owner = owner;
         _transform = transform;
         _radius = checkRadius;
     }
-    private GameUnit _owner;
     private Transform _transform;
     private float _radius;
     public bool _isFindingUnblockedEnemy;

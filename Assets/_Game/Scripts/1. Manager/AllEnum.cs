@@ -5,13 +5,9 @@ using UnityEngine;
 public enum PoolType
 {
     EnemyMelee,
-    EnemyRanged,
     MinionMelee,
-    MinionRanged,
-    Totem,
-    EnemyBullet,
-    MinionBullet,
-    TotemBullet,
+    Totem_Earth, Totem_Fire, Totem_Lightning, Totem_Wind, Totem_Ice,
+    Totem_Bullet_Earth, Totem_Bullet_Fire, Totem_Bullet_Lightning, Totem_Bullet_Wind, Totem_Bullet_Ice,
     Barrack
 }
 public enum MinionType
@@ -23,16 +19,13 @@ public enum MovingType
 {
     Reinforcing,
     Defending,
-    AfterMatch,
     ReachedBarrack,
     ReachedVillage,
 }
 public enum TerritoryState
 {
     Unlocked = 0,
-    BarrackBuilt = 1,
     Locked = 2,
-    BarrackFull = 4,
 }
 public enum GridStructure
 {

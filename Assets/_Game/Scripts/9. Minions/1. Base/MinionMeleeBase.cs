@@ -5,19 +5,9 @@ using UnityEngine.AI;
 
 public class MinionMeleeBase : MinionBase
 {
-    #region checklog state machine
-    [SerializeField] private string CurrentState;
-    [SerializeField] private string agentIsstop;
-    [SerializeField] private string readytoattack;
-    [SerializeField] private string dualingTarget;
-    [SerializeField] private string distance;
-
-    public void SetState(StateBase<MinionMeleeBase> state)
-    {
-        CurrentState = state.ToString();
-    }
+    #region checklog variables
+    //để sau
     #endregion
-    
     
     #region variables that need instantiate at Awake [HideInInspector]
     //State machine
@@ -32,12 +22,7 @@ public class MinionMeleeBase : MinionBase
     public virtual void Update()
     {
         StateMachine.currentState.OnFrameUpdate();
-        readytoattack = _moveComponent.ReadyToAttack().ToString();
-        agentIsstop = _moveComponent._agent.isStopped.ToString();
-        if (_moveComponent._dualingTarget == null)
-            return;
-        dualingTarget = _moveComponent._dualingTarget._transform.position.ToString();
-        distance = Vector3.Distance(transform.position, _moveComponent._dualingTarget._transform.position).ToString();
+        
             
     }
 
@@ -50,26 +35,26 @@ public class MinionMeleeBase : MinionBase
     
     #region GameUnit override functions
 
-    public override void StateMachineConstructor()
+    protected override void StateMachineConstructor()
     {
         StateMachine = new StateMachine<MinionMeleeBase>();
         MoveState = new State_Move_Minion_Melee(this, StateMachine);
         AttackState = new State_Attack_Minion_Melee(this, StateMachine);
     }
 
-    public override void ComponentConstructor()
+    protected override void ComponentConstructor()
     {
         //health
-        _healthComponent = new Component_Health(this,transform, 12f);
+        _healthComponent = new Component_Health(this,transform, 15f);
         components.Add(_healthComponent);
         //attack
         _attackComponent = new Component_Attack_Minion(this, 3f, 1.5f);
         components.Add(_attackComponent);
         //move
-        _moveComponent = new Component_Move_Minion(this, GetComponent<NavMeshAgent>(), 3f);
+        _moveComponent = new Component_Move_Minion(this, GetComponent<NavMeshAgent>(), 3f, 6.5f);
         components.Add(_moveComponent);   
         //check
-        _checkComponent = new Component_Check_Minion(this, transform, 5f);
+        _checkComponent = new Component_Check_Minion(transform, 5f);
         components.Add(_checkComponent);
     }
     public override void OnInit()
@@ -79,7 +64,7 @@ public class MinionMeleeBase : MinionBase
         StateMachine.Initialize(MoveState);
     }
 
-    public override void InitAllComponents()
+    protected override void InitAllComponents()
     {
         _healthComponent.OnInit();
         _attackComponent.OnInit();

@@ -4,10 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 public class MinionBase : GameUnit
 {
-    public VillageBase villageSpawner;
-    public BarrackBase barrackSpawner;
-    
-    
+    public Component_Spawner_Base _spawner;
     #region enum variables
     public MinionType minionType;
     public MovingType movingType;
@@ -35,43 +32,4 @@ public class MinionBase : GameUnit
         base.OnTargetDeath(unit);
     }
     #endregion
-    
-    public override void OnDespawn()
-    {
-        base.OnDespawn();
-        switch (movingType)
-        {
-            case MovingType.Reinforcing:
-            case MovingType.ReachedVillage:
-                villageSpawner.reinforcementSpawned--;
-                break;
-            case MovingType.Defending:
-            case MovingType.AfterMatch:
-                switch (minionType)
-                {
-                    case MinionType.Village:
-                        villageSpawner.defenseCount--;
-                        villageSpawner.defenseSpawned--;
-                        break;
-                    case MinionType.Barrack:
-                        barrackSpawner._minionCapacity++;
-                        break;
-                }
-                break;
-            case MovingType.ReachedBarrack:
-                switch (minionType)
-                {
-                    case MinionType.Village:
-                        villageSpawner.reinforcementSpawned--;
-                        break;
-                    case MinionType.Barrack:
-                        barrackSpawner.defenseSpawned--;
-                        break;
-                }
-                break;
-        }
-        
-    }
-    
-    
 }

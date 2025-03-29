@@ -32,7 +32,7 @@ public class State_RangedAttack_Enemy_Ranged : StateBase<EnemyRangedBase>
             _unit._attackRangedCheck.HandleExit();
             _unit.StateMachine.ChangeState(_unit.MoveState); // Quay lại tuần tra nếu không có mục tiêu
         }
-        else if (Time.time - _unit._attackComponent._lastAttackTime >= _unit._attackComponent._speed)
+        else if (Time.time - _unit._attackComponent._lastAttackTime >= _unit._attackComponent._attackSpeed)
         {
             _unit._attackComponent._lastAttackTime = Time.time;
             _unit._attackComponent.RangedAttack();

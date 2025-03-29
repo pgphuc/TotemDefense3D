@@ -60,23 +60,23 @@ public class CanvasGameplay : UICanvas
         healthText.text = health.ToString();
     }
 
-    private void ShowTerritoryPanel(TerritoryGrid territoryGrid)//làm sau
+    private void ShowTerritoryPanel(TerritoryGrid grid)//làm sau
     {
         if (selectedTerritoryGrid == null)
         {
             infoPanel.SetActive(true);
-            selectedTerritoryGrid = territoryGrid;
+            selectedTerritoryGrid = grid;
             CheckTerritoryGrid(selectedTerritoryGrid);
         }
     }
 
-    private void CheckTerritoryGrid(TerritoryGrid territoryGrid)
+    private void CheckTerritoryGrid(TerritoryGrid grid)
     {
-        switch (territoryGrid.gridStructure)
+        switch (grid.gridStructure)
         {
             case GridStructure.Empty:
             {
-                CheckTerritory(territoryGrid);
+                CheckTerritory(grid);
                 break;
             }
             case GridStructure.Barrack:
@@ -88,7 +88,7 @@ public class CanvasGameplay : UICanvas
                  * 2. Thông tin barrack
                  * 3. Nút bán barrack
                  */
-                ChangeColorOnSelect(territoryGrid);
+                ChangeColorOnSelect(grid);
                 break;
             }
             case GridStructure.Totem:
@@ -111,23 +111,23 @@ public class CanvasGameplay : UICanvas
                  * 1. Thông tin totem
                  * 2. Nút bán totem
                  */
-                ChangeColorOnSelect(territoryGrid);
+                ChangeColorOnSelect(grid);
                 break;
             }
         }
     }
 
-    private void CheckTerritory(TerritoryGrid territoryGrid)
+    private void CheckTerritory(TerritoryGrid grid)
     {
-        switch (territoryGrid.thisTerritory.state)
+        switch (grid.state)
         {
             case TerritoryState.Locked:
             {
                 //TODO: Hiển thị buff của territory
                 ActiveButton(territoryButton);
-                foreach (TerritoryGrid grid in territoryGrid.thisTerritory.gridsList)
+                foreach (TerritoryGrid territoryGrid in MapManager.gridDictionary[grid.territoryID])
                 {
-                    ChangeColorOnSelect(grid);
+                    ChangeColorOnSelect(territoryGrid);
                 }
                 break;
             }
@@ -139,7 +139,7 @@ public class CanvasGameplay : UICanvas
                 {
                     ActiveButton(button);
                 }
-                ChangeColorOnSelect(territoryGrid);
+                ChangeColorOnSelect(grid);
                 break;
             }
         }
@@ -159,7 +159,7 @@ public class CanvasGameplay : UICanvas
         componentRenderer.material.color = (Color)originalColor; // Trả lại màu gốc
     }
 
-    private void HideTerritoryPanel(TerritoryGrid territoryGrid)
+    private void HideTerritoryPanel(TerritoryGrid grid)
     {
         if (!infoPanel.activeSelf)
             return;
@@ -167,18 +167,18 @@ public class CanvasGameplay : UICanvas
         DeactiveAllButton();
         infoPanel.SetActive(false);
     }
-    private void ResetTerritoryColour(TerritoryGrid territoryGrid)
+    private void ResetTerritoryColour(TerritoryGrid grid)
     {
-        if (territoryGrid.thisTerritory.state == TerritoryState.Locked)
+        if (grid.state == TerritoryState.Locked)
         {
-            foreach (TerritoryGrid grid in territoryGrid.thisTerritory.gridsList)
+            foreach (TerritoryGrid territoryGrid in MapManager.gridDictionary[grid.territoryID])
             {
-                ChangeToOriginalColor(grid);
+                ChangeToOriginalColor(territoryGrid);
             }
         }
         else
         {
-            ChangeToOriginalColor(territoryGrid);
+            ChangeToOriginalColor(grid);
         }
         originalColor = null;
     }
@@ -204,16 +204,22 @@ public class CanvasGameplay : UICanvas
         UIManager.Instance.OpenUI<CanvasSettings>().SetState(this);
     }
 
+    private void HandlePanelAfterBuying()
+    {
+        PlayerInteraction.Instance.checkInfoGrid = null;
+        HideTerritoryPanel(selectedTerritoryGrid);
+        originalColor = null;
+    }
+
     public void BuyTerritoryButton()
     {
         if (!selectedTerritoryGrid)
             return;
-        
-        selectedTerritoryGrid.thisTerritory.ChangeState(TerritoryState.Unlocked);
-        PlayerInteraction.Instance.checkInfoGrid = null;
-        HideTerritoryPanel(selectedTerritoryGrid);
-        
-        originalColor = null;
+        foreach (TerritoryGrid grid in MapManager.gridDictionary[selectedTerritoryGrid.territoryID])
+        {
+            grid.UnlockGrid();
+        }
+        HandlePanelAfterBuying();
     }
 
     public void BuyBarrackButton()
@@ -221,22 +227,43 @@ public class CanvasGameplay : UICanvas
         selectedTerritoryGrid.BuildBarrack();
         selectedTerritoryGrid.gridStructure = GridStructure.Barrack;
         
-        selectedTerritoryGrid.thisTerritory.ChangeState(TerritoryState.BarrackBuilt);
-        PlayerInteraction.Instance.checkInfoGrid = null;
-        HideTerritoryPanel(selectedTerritoryGrid);
-        
-        originalColor = null;
+        HandlePanelAfterBuying();
     }
 
-    public void BuyTotemButton()//Làm sau
+    public void EarthTotemButton()//check lại
     {
-        selectedTerritoryGrid.BuildTotem();
+        selectedTerritoryGrid.BuildEarthTotem();
         selectedTerritoryGrid.gridStructure = GridStructure.Totem;
         
-        PlayerInteraction.Instance.checkInfoGrid = null;
-        HideTerritoryPanel(selectedTerritoryGrid);
+        HandlePanelAfterBuying();
+    }
+    public void FireTotemButton()//check lại
+    {
+        selectedTerritoryGrid.BuildFireTotem();
+        selectedTerritoryGrid.gridStructure = GridStructure.Totem;
         
-        originalColor = null;
+        HandlePanelAfterBuying();
+    }
+    public void IceTotemButton()//check lại
+    {
+        selectedTerritoryGrid.BuildIceTotem();
+        selectedTerritoryGrid.gridStructure = GridStructure.Totem;
+        
+        HandlePanelAfterBuying();
+    }
+    public void WindTotemButton()//check lại
+    {
+        selectedTerritoryGrid.BuildWindTotem();
+        selectedTerritoryGrid.gridStructure = GridStructure.Totem;
+        
+        HandlePanelAfterBuying();
+    }
+    public void LightningTotemButton()//check lại
+    {
+        selectedTerritoryGrid.BuildLightningTotem();
+        selectedTerritoryGrid.gridStructure = GridStructure.Totem;
+        
+        HandlePanelAfterBuying();
     }
     
     

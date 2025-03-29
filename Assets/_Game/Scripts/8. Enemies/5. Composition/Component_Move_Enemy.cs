@@ -16,7 +16,8 @@ public class Component_Move_Enemy : ComponentBase, IComponentMove
         _dualingTarget = null;
         _agent.enabled = true;
     }
-    public EnemyBase _owner;
+
+    private EnemyBase _owner;
     public NavMeshAgent _agent;
     public Vector3 _target { get; set; }
     public Component_Health _dualingTarget { get; set; }
@@ -90,15 +91,14 @@ public class Component_Move_Enemy : ComponentBase, IComponentMove
         StopMoving();
         _dualingTarget = GetTargetComponent.Item1;
         SetMoveTarget(GetTargetComponent.Item1._transform.position);
-        _owner.SubDeathEvent(GetTargetComponent.Item2);
+        _owner.SubcribeAllEvents(GetTargetComponent.Item2);
         
     }
     public bool ReadyToAttackMinion()
     {
-        if (_dualingTarget._owner is MinionBase)
+        if (_dualingTarget?._owner is MinionBase)
         {
-            return _dualingTarget != null
-                   && _agent.isStopped
+            return _agent.isStopped
                    && Vector3.Distance(_owner.transform.position, _dualingTarget._transform.position) <= _meleeRadius;
         }
         return false;

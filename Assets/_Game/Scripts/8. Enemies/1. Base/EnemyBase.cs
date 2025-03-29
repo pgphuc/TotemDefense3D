@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,16 +26,4 @@ public class EnemyBase : GameUnit
     }
     
     #endregion
-
-    public override void OnDespawn()
-    {
-        if (MapManager.Instance.surroundBasePoints.TryGetValue(_moveComponent._target, out bool isOccupied))
-        {
-            if (isOccupied)
-            {
-                MapManager.Instance.surroundBasePoints[_moveComponent._target] = false;
-            }
-        }
-        base.OnDespawn();
-    }
 }

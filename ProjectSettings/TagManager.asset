@@ -16,6 +16,7 @@ TagManager:
   - BomberEnemy
   - BarrackReinforceCheck
   - TerritoryGrid
+  - Ground
   layers:
   - Default
   - TransparentFX
@@ -25,10 +26,10 @@ TagManager:
   - UI
   - Button
   - Enemy
-  - 
-  - 
-  - 
-  - 
+  - StructureCheck
+  - EnemyBullet
+  - Minion
+  - Champion
   - 
   - 
   - 

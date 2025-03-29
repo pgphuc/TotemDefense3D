@@ -11,35 +11,57 @@ public class GameUnit : MonoBehaviour
     
     #region event implementation
     
+    //Barrack && Village event (enemy-related)
+    public event Action<GameUnit> EnterAttack;
+    public event Action<GameUnit> ExitAttack;
+
+    public void InvokeEnterAttack()
+    {
+        EnterAttack?.Invoke(this);
+    }
+    public void InvokeExitAttack()
+    {
+        ExitAttack?.Invoke(this);
+    }
+    /*
+     * end
+     */
+    
+   
+    
+    //Death event (all unit)
     public event Action<GameUnit> OnDeath;
-    public void SubDeathEvent(GameUnit unit)
+    public virtual void SubcribeAllEvents(GameUnit unit)
     {
         unit.OnDeath += OnTargetDeath;
     }
 
-    private void UnSubDeathEvent(GameUnit unit)
+    protected virtual void UnSubcribeAllEvents(GameUnit unit)
     {
         unit.OnDeath -= OnTargetDeath;
     }
 
     protected virtual void OnTargetDeath(GameUnit unit)
     {
-        UnSubDeathEvent(unit);
+        UnSubcribeAllEvents(unit);
     }
     
     #endregion
 
+    
+    
     public virtual void Awake()
     {
         ComponentConstructor();
         StateMachineConstructor();
     }
 
-    public virtual void StateMachineConstructor()
+    protected virtual void StateMachineConstructor()
     {
         
     }
-    public virtual void ComponentConstructor()
+
+    protected virtual void ComponentConstructor()
     {
         
     }
@@ -47,8 +69,8 @@ public class GameUnit : MonoBehaviour
     {
         InitAllComponents();
     }
-    
-    public virtual void InitAllComponents()
+
+    protected virtual void InitAllComponents()
     {
         
     }

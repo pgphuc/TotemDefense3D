@@ -114,11 +114,6 @@ public class Pool
         }
         unit = inactives.Dequeue();
         actives.Add(unit);
-        // if (unit == null)
-        //     Debug.Log("unit bị null");
-        // else
-        //     Debug.Log("unit.TF bị null");
-        // return unit;
         unit.transform.SetPositionAndRotation(position, rotation);
         unit.gameObject.SetActive(true);
         return unit;

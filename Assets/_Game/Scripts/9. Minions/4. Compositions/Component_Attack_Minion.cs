@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class Component_Attack_Minion :ComponentBase, IComponentAttack
 {
-    public Component_Attack_Minion(MinionBase owner, float damage, float speed)
+    public Component_Attack_Minion(MinionBase owner, float damage, float attackSpeed)
     {
         _owner = owner;
         _damage = damage;
-        _speed = speed;
+        _attackSpeed = attackSpeed;
     }
     public override void OnInit()
     {
@@ -18,12 +18,12 @@ public class Component_Attack_Minion :ComponentBase, IComponentAttack
     public Component_Health _attackTarget { get; set; }
     public float _lastAttackTime { get; set; }
     public float _damage { get; set; }
-    public float _speed { get; set; }
+    public float _attackSpeed { get; set; }
 
     public void StartAttack()
     {
         _attackTarget = _owner._moveComponent._dualingTarget;
-        _lastAttackTime = Time.time;
+        _lastAttackTime = Time.time - _attackSpeed;
         if (_attackTarget._isBlocked)
         {
             _owner._checkComponent._isFindingUnblockedEnemy = true;
@@ -51,6 +51,6 @@ public class Component_Attack_Minion :ComponentBase, IComponentAttack
 
     public bool FinishCooldown()
     {
-        return Time.time - _lastAttackTime >= _speed;
+        return Time.time - _lastAttackTime >= _attackSpeed;
     }
 }

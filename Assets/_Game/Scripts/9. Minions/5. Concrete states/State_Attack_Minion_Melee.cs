@@ -12,7 +12,6 @@ public class State_Attack_Minion_Melee :StateBase<MinionMeleeBase>
     {
         base.OnEnter();
         _unit._attackComponent.StartAttack();
-        _unit.SetState(this);
     }
 
     public override void OnExit()
@@ -26,7 +25,7 @@ public class State_Attack_Minion_Melee :StateBase<MinionMeleeBase>
         base.OnFrameUpdate();
         if (_unit._attackComponent._attackTarget == null)
         {
-            _unit.StateMachine.ChangeState(_unit.MoveState); // Quay lại tuần tra nếu không có mục tiêu
+            _stateMachine.ChangeState(_unit.MoveState); // Quay lại tuần tra nếu không có mục tiêu
         }
         else if (_unit._attackComponent.FinishCooldown())
         {
@@ -41,7 +40,7 @@ public class State_Attack_Minion_Melee :StateBase<MinionMeleeBase>
             return;
         if (_unit._checkComponent.HasAvailableTarget())
         {
-            _unit.StateMachine.ChangeState(_unit.MoveState);
+            _stateMachine.ChangeState(_unit.MoveState);
         }
     }
 

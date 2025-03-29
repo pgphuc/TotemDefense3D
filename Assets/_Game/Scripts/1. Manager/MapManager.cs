@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Octrees;
 using Unity.AI.Navigation;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -9,7 +8,12 @@ public class MapManager: Singleton<MapManager>
 {
     #region Global variables used by other classes
     public Dictionary<Vector3, bool> surroundBasePoints = new Dictionary<Vector3, bool>();
-    public Dictionary<int, Territory> territoryDictionary = new Dictionary<int, Territory>();
+
+
+    public static Dictionary<int, List<TerritoryGrid>> gridDictionary = new Dictionary<int, List<TerritoryGrid>>();
+    
+    
+    
     public List<BarrackBase> BarrackNotFullList = new List<BarrackBase>();
     [HideInInspector] public GameObject village;
     [HideInInspector] public Collider villageCollider;
@@ -26,7 +30,6 @@ public class MapManager: Singleton<MapManager>
     [SerializeField] private Transform enemyPortalParent;
     
     [SerializeField] private GameObject territoryGridPrefab;
-    [SerializeField] private Territory territoryPrefab;
     [SerializeField] private Transform territoryParent;
     
     [SerializeField] private GameObject villageGridPrefab;
@@ -145,30 +148,21 @@ public class MapManager: Singleton<MapManager>
     {
         territoryID = gridValue % 100;
         territoryType = gridValue / 100;
-        Territory territory = FindTerritory(tf);
-        GameObject territoryGrid = Instantiate(prefab, generatePosition, Quaternion.identity, territory.transform);
+        GameObject territoryGrid = Instantiate(prefab, generatePosition, Quaternion.identity, tf);
+        
         TerritoryGrid grid = territoryGrid.GetComponent<TerritoryGrid>();
-        grid.thisTerritory = territory;
+        
+        grid.territoryID = territoryID;
+        SetTerritoryState(grid);
         SetTerritoryColour(grid);
         AddToTerritoryGridList(grid);
         return territoryGrid;
     }
     
-    private Territory FindTerritory(Transform tf)
-    {
-        Territory newTerritory;
-        if (territoryDictionary.TryGetValue(territoryID, out newTerritory)) 
-            return newTerritory;
-        newTerritory = Instantiate(territoryPrefab, generatePosition, Quaternion.identity, tf);
-        territoryDictionary.Add(territoryID, newTerritory);
-        SetTerritoryState(newTerritory);
-        return newTerritory;
-    }
     
-    private void SetTerritoryState(Territory territory)
+    private void SetTerritoryState(TerritoryGrid grid)
     {
-        territory.state = (TerritoryState)(territoryType - 1);
-        territory.territoryID = territoryID;
+        grid.state = territoryType == 1 ? TerritoryState.Unlocked : TerritoryState.Locked;
     }
     private void SetTerritoryColour(TerritoryGrid grid)
     {
@@ -176,7 +170,11 @@ public class MapManager: Singleton<MapManager>
     }
     private void AddToTerritoryGridList(TerritoryGrid grid)
     {
-        territoryDictionary[territoryID].gridsList.Add(grid);
+        if (!gridDictionary.ContainsKey(grid.territoryID))
+        {
+            gridDictionary[territoryID] = new List<TerritoryGrid>();
+        }
+        gridDictionary[territoryID].Add(grid);
     }
     public bool CheckBarrackAvailability()
     {
@@ -188,7 +186,7 @@ public class MapManager: Singleton<MapManager>
         int numberOfMinions = 0;
         foreach (BarrackBase barrack in BarrackNotFullList)
         {
-            numberOfMinions += barrack._minionCapacity;
+            numberOfMinions += barrack._spawnerComponent.NumberOfMinionsNeeded();
         }
         return numberOfMinions;
     }
@@ -219,6 +217,74 @@ public class MapManager: Singleton<MapManager>
     }
     #endregion
 
+    
+    #region Effect Manager
+    private static Dictionary<Collider, List<EffectBase>> EffectDictionary = new Dictionary<Collider, List<EffectBase>>();
+
+    public static void AddEffect(EffectBase effect)
+    {
+        Collider target = effect._target;
+        if (!EffectDictionary.ContainsKey(target))
+            EffectDictionary[target] = new List<EffectBase>();
+        EffectBase existingEffect = FindExistingEffect(EffectDictionary[target], effect);
+        if (existingEffect != null)
+        {
+            existingEffect.ResetEffect();
+        }
+        else
+        {
+            EffectDictionary[target].Add(effect);
+            effect.ApplyEffect();
+        }
+        
+    }
+
+    private static EffectBase FindExistingEffect(List<EffectBase> effectList, EffectBase searchEffect)
+    {
+        foreach (EffectBase effect in effectList)
+        {
+            if (effect == searchEffect)
+                return effect;
+        }
+        return null;
+    }
+
+    private static void RemoveEffect(EffectBase effect)
+    {
+        Collider target = effect._target;
+        if (EffectDictionary.ContainsKey(target))
+        {
+            EffectDictionary[target].Remove(effect);
+            effect.RemoveEffect();
+            if (EffectDictionary[target].Count > 0)//xóa khỏi dictionary nếu ko còn effect
+            {
+                EffectDictionary.Remove(target);
+            }
+        }
+    }
+    
+    private void Update()
+    {
+        foreach (var pair in EffectDictionary)
+        {
+            List<EffectBase> effectsToRemove = new List<EffectBase>();
+            foreach (EffectBase effect in pair.Value)
+            {
+                if (effect.UpdateEffect())
+                {
+                    effectsToRemove.Add(effect);
+                }
+            }
+
+            foreach (EffectBase effect in effectsToRemove)
+            {
+                RemoveEffect(effect);
+            }
+        }
+    }
+    
+    #endregion
+    
     // #region Octree Implementation
     // [HideInInspector] public List<GameObject> objects = new List<GameObject>();//Các object đưa vào Octree
     // private float minNodeSize = 1f;//Kích thước của 1 node nhỏ nhất trong octree

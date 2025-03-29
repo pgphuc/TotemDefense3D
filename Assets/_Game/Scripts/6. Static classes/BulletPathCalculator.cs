@@ -4,8 +4,9 @@ using UnityEngine;
 
 public static class BulletPathCalculator
 {
-    private static float height = 5f;
+    private static float height = 10f;
     private static int steps = 20;
+    
     public static List<Vector3> ParabolPath(Vector3 startPos, Vector3 targetPos)
     {
         List<Vector3> path = new List<Vector3>();
@@ -23,15 +24,18 @@ public static class BulletPathCalculator
 
             path.Add(new Vector3(x, y, z));
         }
-
         return path;
     }
 
     public static List<Vector3> StraightPath(Vector3 startPos, Vector3 targetPos)
     {
         List<Vector3> path = new List<Vector3>();
-        
-        
+        for (int i = 0; i <= steps; i++)
+        {
+            float t  = (float)i / steps;
+            Vector3 point = Vector3.Lerp(startPos, targetPos, t);
+            path.Add(point);
+        }
         return path;
     }
 }

@@ -58,14 +58,15 @@ public class EnemyRangedBase : EnemyBase
         StateMachine.Initialize(MoveState);
     }
 
-    public override void StateMachineConstructor()
+    protected override void StateMachineConstructor()
     {
         StateMachine = new StateMachine<EnemyRangedBase>();
         MoveState = new State_Move_Enemy_Ranged(this, StateMachine);
         RangedAttackState = new State_RangedAttack_Enemy_Ranged(this, StateMachine);
         MeleeAttackState = new State_MeleeAttack_Enemy_Ranged(this, StateMachine);
     }
-    public override void ComponentConstructor()
+
+    protected override void ComponentConstructor()
     {
         //health
         _healthComponent = new Component_Health(this, transform, 110f);
@@ -77,7 +78,8 @@ public class EnemyRangedBase : EnemyBase
         _moveComponent = new Component_Move_Enemy(this, GetComponent<NavMeshAgent>(), 1f);
         components.Add(_moveComponent);
     }
-    public override void InitAllComponents()
+
+    protected override void InitAllComponents()
     {
         _healthComponent.OnInit();
         _attackComponent.OnInit();

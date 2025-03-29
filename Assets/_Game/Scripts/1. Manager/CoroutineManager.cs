@@ -8,4 +8,9 @@ public class CoroutineManager : Singleton<CoroutineManager>
     {
         return Instance.StartCoroutine(coroutine);
     }
+
+    public static void StopRoutine(Coroutine coroutine)
+    {
+        Instance.StopCoroutine(coroutine);
+    }
 }

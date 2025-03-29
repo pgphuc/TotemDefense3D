@@ -12,7 +12,6 @@ public class State_Move_Minion_Melee : StateBase<MinionMeleeBase>
     {
         base.OnEnter();
         _unit._moveComponent.StartMoving();
-        _unit.SetState(this);
     }
 
     public override void OnExit()

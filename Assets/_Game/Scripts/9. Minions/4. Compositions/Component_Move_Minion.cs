@@ -9,11 +9,12 @@ using UnityEngine.Rendering.Universal;
 
 public class Component_Move_Minion :ComponentBase, IComponentMove
 {
-    public Component_Move_Minion(MinionBase owner, NavMeshAgent agent, float attackRadius)
+    public Component_Move_Minion(MinionBase owner, NavMeshAgent agent, float attackRadius, float reinforceRadius)
     {
         _owner = owner;
         _agent = agent;
         _meleeRadius = attackRadius;
+        _reinforceRadius = reinforceRadius;
     }
     public override void OnInit()
     {
@@ -26,6 +27,7 @@ public class Component_Move_Minion :ComponentBase, IComponentMove
     public Vector3 _target { get; set; }
     public Component_Health _dualingTarget { get; set; }
     public float _meleeRadius { get; set; }
+    public float _reinforceRadius;
     public bool _isMovingToEnemy;
     public void Moving()
     {
@@ -76,20 +78,9 @@ public class Component_Move_Minion :ComponentBase, IComponentMove
                     {
                         destination = _dualingTarget._transform.position;
                     }
-                    else 
+                    else
                     {
-                        goto case MovingType.AfterMatch;
-                    }
-                    break;
-                case MovingType.AfterMatch://Sau khi giết đc enemy
-                    switch (_owner.minionType)
-                    {
-                        case MinionType.Barrack:
-                            destination = BackToBarrack();
-                            break;
-                        case MinionType.Village:
-                            destination = BackToVillage();
-                            break;
+                        destination = _owner.minionType == MinionType.Barrack ? BackToBarrack() : BackToVillage();
                     }
                     break;
             }
@@ -105,16 +96,16 @@ public class Component_Move_Minion :ComponentBase, IComponentMove
     {
         Vector3 movePosition = MapManager.Instance.village.transform.position;
         bool hasBarrackAvailable = MapManager.Instance.CheckBarrackAvailability();
-        if (hasBarrackAvailable)
+        if (!hasBarrackAvailable)
+            return movePosition;
+        float minDistance = float.MaxValue;
+        foreach (BarrackBase barrack in MapManager.Instance.BarrackNotFullList)
         {
-            int territoryID = int.MaxValue;
-            foreach (BarrackBase barrack in MapManager.Instance.BarrackNotFullList)
-            {
-                if (barrack._territory.territoryID >= territoryID)
-                    continue;
-                territoryID = barrack._territory.territoryID;
-                movePosition = barrack.transform.position;
-            }
+            float distance = Vector3.Distance(_owner.transform.position, barrack.transform.position);
+            if (distance >= minDistance)
+                continue;
+            minDistance = distance;
+            movePosition = barrack.transform.position;
         }
         return movePosition;
     }
@@ -122,12 +113,12 @@ public class Component_Move_Minion :ComponentBase, IComponentMove
 
     private Vector3 BackToVillage()
     {
-        return _owner.villageSpawner.spawnerComponent.FindSurroundPoints(_owner.transform.position);
+        return _owner._spawner.FindSurroundPoints(_owner.transform.position);
     }
 
     private Vector3 BackToBarrack()
     {
-        return _owner.barrackSpawner.spawnerComponent.FindSurroundPoints(_owner.transform.position);
+        return _owner._spawner.FindSurroundPoints(_owner.transform.position);
     }
 
     public void MoveToDefending((Component_Health, GameUnit, Component_Move_Enemy) GetDefenseData)
@@ -155,7 +146,7 @@ public class Component_Move_Minion :ComponentBase, IComponentMove
 
     private void SubcribeDeathEvent(GameUnit sub)
     {
-        _owner.SubDeathEvent(sub);
+        _owner.SubcribeAllEvents(sub);
     }
 
     private void BlockEnemy(Component_Move_Enemy enemy)
@@ -176,16 +167,11 @@ public class Component_Move_Minion :ComponentBase, IComponentMove
 
     public void CheckMovingType()
     {
-        if (_owner.movingType == MovingType.Defending)
-        {
-            _owner.movingType = MovingType.AfterMatch;
-            StartMoving();
-        }
-        if (_agent.remainingDistance > _meleeRadius)
+        if (Vector3.Distance(_owner.transform.position, _target) > _reinforceRadius)
             return;
         switch (_owner.movingType)
         {
-            case MovingType.AfterMatch:
+            case MovingType.Defending:
                 _owner.movingType = _owner.minionType == MinionType.Village ?
                     MovingType.ReachedVillage : MovingType.ReachedBarrack;
                 break;

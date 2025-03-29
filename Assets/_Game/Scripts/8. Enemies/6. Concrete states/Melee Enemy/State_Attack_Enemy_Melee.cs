@@ -13,13 +13,14 @@ public class State_Attack_Enemy_Melee : StateBase<EnemyMeleeBase>
     {
         base.OnEnter();
         _unit._attackComponent.StartAttack();
-        _unit.SetState(this);
+        _unit.InvokeEnterAttack();
     }
 
     public override void OnExit()
     {
         base.OnExit();
         _unit._attackComponent.StopAttacking();
+        _unit.InvokeExitAttack();
     }
 
     public override void OnFrameUpdate()

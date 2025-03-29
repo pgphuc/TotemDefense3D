@@ -13,7 +13,6 @@ public class State_Move_Enemy_Melee : StateBase<EnemyMeleeBase>
     {
         base.OnEnter();
         _unit._moveComponent.StartMoving();
-        _unit.SetState(this);
     }
 
     public override void OnExit()

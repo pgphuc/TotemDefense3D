@@ -5,18 +5,12 @@ using UnityEngine.AI;
 
 public class EnemyMeleeBase : EnemyBase
 {
-    [SerializeField] private string CurrentState;
-    [SerializeField] private string readytoattack;
-    [SerializeField] private string dualingTarget;
-    [SerializeField] private string distance;
+    #region checklog variables
 
-    public void SetState(StateBase<EnemyMeleeBase> state)
-    {
-        CurrentState = state.ToString();
-    }
+    [SerializeField] private string health;
+    #endregion
     
-    
-    #region variables that need instantiate at Awake [HideInInspector]
+    #region state machine references
     //State machine
     [HideInInspector] public StateMachine<EnemyMeleeBase> StateMachine;
     [HideInInspector] public State_Move_Enemy_Melee MoveState;
@@ -24,19 +18,11 @@ public class EnemyMeleeBase : EnemyBase
     
     #endregion
     
-    #region Awake / Update / FixedUpdate
-    public override void Awake()
-    {
-        base.Awake();
-    }
+    #region unity loop functions
     public virtual void Update()
     {
         StateMachine.currentState.OnFrameUpdate();
-        readytoattack = _moveComponent.ReadyToAttackMinion().ToString();
-        if (_moveComponent._dualingTarget == null)
-            return;
-        dualingTarget = _moveComponent._dualingTarget._transform.position.ToString();
-        distance = Vector3.Distance(transform.position, _moveComponent._dualingTarget._transform.position).ToString();
+        health = _healthComponent.CurrentHealth.ToString();
     }
 
     public virtual void FixedUpdate()
@@ -48,13 +34,14 @@ public class EnemyMeleeBase : EnemyBase
     
     #region GameUnit override functions
 
-    public override void StateMachineConstructor()
+    protected override void StateMachineConstructor()
     {
         StateMachine = new StateMachine<EnemyMeleeBase>();
         MoveState = new State_Move_Enemy_Melee(this, StateMachine);
         AttackState = new State_Attack_Enemy_Melee(this, StateMachine);
     }
-    public override void ComponentConstructor()
+
+    protected override void ComponentConstructor()
     {
         //health
         _healthComponent = new Component_Health(this, transform,15f);
@@ -73,7 +60,7 @@ public class EnemyMeleeBase : EnemyBase
         StateMachine.Initialize(MoveState);
     }
 
-    public override void InitAllComponents()
+    protected override void InitAllComponents()
     {
         _healthComponent.OnInit();
         _attackComponent.OnInit();

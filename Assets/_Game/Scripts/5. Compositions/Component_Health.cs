@@ -17,7 +17,7 @@ public class Component_Health : ComponentBase, IComponentHealth
         _isBlocked = false;
     }
 
-    public GameUnit _owner { get; set; }//object giữ component
+    public GameUnit _owner { get;  }//object giữ component
     public Transform _transform { get; }
     public float MaxHealth { get; set; }
     public float CurrentHealth { get; set; }
