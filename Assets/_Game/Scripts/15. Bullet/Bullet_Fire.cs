@@ -32,7 +32,7 @@ public class Bullet_Fire : BulletBase
     protected override void HandleBulletHit(Collider other)
     {
         base.HandleBulletHit(other);
-        MapManager.AddEffect(new Effect_Burn(other, _burnDuration, _damagePerSecond));
+        EffectManager.AddEffect(new Effect_Burn(other, _burnDuration, _damagePerSecond));
         Invoke(nameof(OnDespawn), 1f);
     }
     

@@ -14,16 +14,18 @@ public class CanvasVictory : UICanvas
     public void MainMenuButton()
     {
         CloseDirectly();
-        UIManager.Instance.OpenUI<CanvasMainMenu>();
+        GameManager.Instance.BackToMainMenu();
     }
     
     public void ReplayButton()
     {
-        //TODO: chơi lại màn
+        CloseDirectly();
+        GameManager.Instance.Replay();
     }
 
     public void NextButton()
     {
+        CloseDirectly();
         //TODO: Chuyển màn sau
     }
 }

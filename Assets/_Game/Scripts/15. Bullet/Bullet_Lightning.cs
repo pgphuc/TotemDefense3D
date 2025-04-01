@@ -58,7 +58,6 @@ public class Bullet_Lightning : BulletBase
         
         if (nextTarget != null)
         {
-            Debug.Log(nextTarget);
             ShootNextTarget(other.transform.position, nextTarget.transform.position);
         }
         else

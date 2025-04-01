@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
+
 public class GameUnit : MonoBehaviour
 {
     [SerializeField] public PoolType poolType;
@@ -29,8 +31,19 @@ public class GameUnit : MonoBehaviour
     
    
     
-    //Death event (all unit)
+    //Death + Health event (all unit)
     public event Action<GameUnit> OnDeath;
+    public event Action<GameUnit> OnHealthChanged;
+
+    public void InvokeHealthChanged()
+    {
+        OnHealthChanged?.Invoke(this);
+    }
+    /*
+     * end
+     */
+    
+    
     public virtual void SubcribeAllEvents(GameUnit unit)
     {
         unit.OnDeath += OnTargetDeath;
@@ -46,6 +59,37 @@ public class GameUnit : MonoBehaviour
         UnSubcribeAllEvents(unit);
     }
     
+    
+    private void HandlePausedGame()
+    {
+        foreach (ComponentBase comp in components)
+        {
+            switch (comp)
+            {
+                case Component_Move_Enemy enemy:
+                    enemy._agent.isStopped = true;
+                    return;
+                case Component_Move_Minion minion:
+                    minion._agent.isStopped = true;
+                    return;
+            }
+        }
+    }
+    private void HandleResumeGame()
+    {
+        foreach (ComponentBase comp in components)
+        {
+            switch (comp)
+            {
+                case Component_Move_Enemy enemy:
+                    enemy._agent.isStopped = false;
+                    return;
+                case Component_Move_Minion minion:
+                    minion._agent.isStopped = false;
+                    return;
+            }
+        }
+    }
     #endregion
 
     
@@ -54,6 +98,7 @@ public class GameUnit : MonoBehaviour
     {
         ComponentConstructor();
         StateMachineConstructor();
+        
     }
 
     protected virtual void StateMachineConstructor()
@@ -68,6 +113,8 @@ public class GameUnit : MonoBehaviour
     public virtual void OnInit()
     {
         InitAllComponents();
+        GameManager.OnPausedGame += HandlePausedGame;
+        GameManager.OnResumeGame += HandleResumeGame;
     }
 
     protected virtual void InitAllComponents()
@@ -78,6 +125,8 @@ public class GameUnit : MonoBehaviour
     public virtual void OnDespawn()
     {
         OnDeath?.Invoke(this);
+        GameManager.OnPausedGame -= HandlePausedGame;
+        GameManager.OnResumeGame -= HandleResumeGame;
         SimplePool.Despawn(this);
     }
 

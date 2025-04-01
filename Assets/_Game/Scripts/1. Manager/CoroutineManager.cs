@@ -13,4 +13,9 @@ public class CoroutineManager : Singleton<CoroutineManager>
     {
         Instance.StopCoroutine(coroutine);
     }
+
+    public static void StopAllRoutine()
+    {
+        Instance.StopAllCoroutines();
+    }
 }

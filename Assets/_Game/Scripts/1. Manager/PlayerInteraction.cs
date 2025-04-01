@@ -6,18 +6,35 @@ using UnityEngine;
 
 public class PlayerInteraction : Singleton<PlayerInteraction>
 {
+    public static Action<int> OnGoldAmountChanged;
+    public static int GoldAmount;
+    
+    
     public static event Action<TerritoryGrid> OnSelectTerritoryGrid;
     public static event Action<TerritoryGrid> OnDeselectTerritoryGrid;
-    public TerritoryGrid checkInfoGrid;
+    [HideInInspector] public TerritoryGrid checkInfoGrid;
     
     [SerializeField] private LayerMask TerritoryGridMask;
     
     private TerritoryGrid mouseDownGrid;
+
+    private bool isPressing;//player đang nhấn giữ
     
-    private bool isPressing = false; //player đang nhấn giữ
-    
-    
+    public void OnInit()
+    {
+        GoldAmount = 100;
+        isPressing = false;
+        EnemySpawner.EnemySpawned += SubcribeEnemyOnDeath;
+        
+    }
     void Update()
+    {
+        CheckMouseAction();
+    }
+    
+    
+    #region show info functions
+    private void CheckMouseAction()
     {
         if (IsPointerOverUIElement())
             return;
@@ -31,6 +48,10 @@ public class PlayerInteraction : Singleton<PlayerInteraction>
         }
     }
 
+    private bool IsPointerOverUIElement()
+    {
+        return UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
+    }
     private void HandleMouseDown()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -75,9 +96,25 @@ public class PlayerInteraction : Singleton<PlayerInteraction>
         OnDeselectTerritoryGrid?.Invoke(checkInfoGrid);
         checkInfoGrid = null;
     }
-    private bool IsPointerOverUIElement()
+    #endregion
+    
+    #region Gold functions
+    private void SubcribeEnemyOnDeath(GameUnit enemy)
     {
-        return UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
+        enemy.OnDeath += HandleEnemyDeath;
     }
+
+    private void HandleEnemyDeath(GameUnit unit)
+    {
+        if (unit is EnemyBase enemy)
+        {
+            GoldAmount += enemy.goldAmount;
+            OnGoldAmountChanged?.Invoke(GoldAmount);
+            unit.OnDeath -= HandleEnemyDeath;
+        }
+        
+    }
+    
+    #endregion
     
 }

@@ -8,25 +8,44 @@ public class CanvasSettings : UICanvas
 
     public void SetState(UICanvas canvas)
     {
-        for (int i = 0; i < buttons.Length; i++)
+        foreach (GameObject button in buttons)
         {
-            buttons[i].gameObject.SetActive(false);
+            button.gameObject.SetActive(false);
         }
-        
-        if (canvas is CanvasMainMenu)
+
+        switch (canvas)
         {
-            buttons[0].gameObject.SetActive(true);
-        }
-        else if (canvas is CanvasGameplay)
-        {
-            buttons[1].gameObject.SetActive(true);
-            buttons[2].gameObject.SetActive(true);
+            case CanvasMainMenu:
+                buttons[0].gameObject.SetActive(true);
+                break;
+            case CanvasGameplay:
+                buttons[1].gameObject.SetActive(true);
+                buttons[2].gameObject.SetActive(true);
+                buttons[3].gameObject.SetActive(true);
+                break;
         }
     }
     
     public void MainMenuButton()
     {
-        UIManager.Instance.CloseAllUI();
-        UIManager.Instance.OpenUI<CanvasMainMenu>();
+        CloseDirectly();
+        GameManager.Instance.BackToMainMenu();
+    }
+
+    public void ClosedButton()
+    {
+        CloseDirectly();
+    }
+
+    public void ContinueButton()
+    {
+        CloseDirectly();
+        GameManager.Instance.ResumeGame();
+    }
+
+    public void RestartButton()
+    {
+        CloseDirectly();
+        GameManager.Instance.Replay();
     }
 }

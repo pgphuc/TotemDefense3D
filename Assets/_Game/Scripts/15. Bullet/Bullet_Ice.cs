@@ -35,7 +35,7 @@ public class Bullet_Ice : BulletBase
     protected override void HandleBulletHit(Collider other)
     {
         base.HandleBulletHit(other);
-        MapManager.AddEffect(new Effect_Slow(other, _slowDuration, _slowAmount));
+        EffectManager.AddEffect(new Effect_Slow(other, _slowDuration, _slowAmount));
         Invoke(nameof(OnDespawn), 1f);
     }
 }

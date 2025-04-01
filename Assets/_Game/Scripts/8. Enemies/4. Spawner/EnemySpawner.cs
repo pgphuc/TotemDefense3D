@@ -1,7 +1,9 @@
+using System;
 using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
+    public static Action<GameUnit> EnemySpawned;
     [SerializeField] GameUnit _prefab;
     private EnemyMeleeBase _enemy;
     float spawnTimer = 5f;
@@ -14,8 +16,7 @@ public class EnemySpawner : MonoBehaviour
             index++;
             spawnTimer = 5f;
             _enemy = SimplePool.Spawn<EnemyMeleeBase>(_prefab.poolType, transform.position, Quaternion.identity);
-            // _enemy = Instantiate(_prefab, transform.position, Quaternion.identity);
-            // _enemy.transform.SetParent(transform, true);
+            EnemySpawned?.Invoke(_enemy);
             _enemy.OnInit();
         }
     }

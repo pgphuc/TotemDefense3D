@@ -8,12 +8,7 @@ public class MapManager: Singleton<MapManager>
 {
     #region Global variables used by other classes
     public Dictionary<Vector3, bool> surroundBasePoints = new Dictionary<Vector3, bool>();
-
-
     public static Dictionary<int, List<TerritoryGrid>> gridDictionary = new Dictionary<int, List<TerritoryGrid>>();
-    
-    
-    
     public List<BarrackBase> BarrackNotFullList = new List<BarrackBase>();
     [HideInInspector] public GameObject village;
     [HideInInspector] public Collider villageCollider;
@@ -56,27 +51,40 @@ public class MapManager: Singleton<MapManager>
     #endregion
     
     #region Start functions
-    
-    private void Start()
+
+    public void OnInit()
     {
         GenerateGround();
         startPosition = FindStartPosition();
         GenerateObstacle();
-        OnInit();
-    }
-
-    private void OnInit()
-    {
+        
         surface.BuildNavMesh();
         FindSurroundBasePoints();
         //octree = new Octree(objects, minNodeSize, wayPoints);//Khởi tạo khi bắt đầu game
+        
     }
+    
     #endregion
+    
+    #region restart functions
+    private List<GameObject> GeneratedObjects = new List<GameObject>();
+
+    public void  OnDestroy()
+    {
+        foreach (GameObject obj in GeneratedObjects)
+        {
+            Destroy(obj);
+        }
+    }
+    
+    #endregion
+    
 
     #region Map Generation functions
     private void GenerateGround()
     {
         ground = Instantiate(groundPrefab, transform.position, Quaternion.identity, transform);
+        GeneratedObjects.Add(ground);
     }
     private Vector3 FindStartPosition()
     {
@@ -128,18 +136,19 @@ public class MapManager: Singleton<MapManager>
         
         if (prefab == territoryGridPrefab)
         {
-            GenerateTerritoryGrid(prefab, tf);
-            //objects.Add(territory);
+            GameObject territory = GenerateTerritoryGrid(prefab, tf);
+            GeneratedObjects.Add(territory);
             return;
         }
         if (prefab == villageGridPrefab)
         {
             village = Instantiate(prefab, generatePosition, Quaternion.identity, tf);
             villageCollider = village.GetComponent<Collider>();
-            //objects.Add(village);
+            GeneratedObjects.Add(village);
             return;
         }
-        Instantiate(prefab, generatePosition, Quaternion.identity, tf);
+        GameObject obj = Instantiate(prefab, generatePosition, Quaternion.identity, tf);
+        GeneratedObjects.Add(obj);
     }
     #endregion
     
@@ -218,72 +227,7 @@ public class MapManager: Singleton<MapManager>
     #endregion
 
     
-    #region Effect Manager
-    private static Dictionary<Collider, List<EffectBase>> EffectDictionary = new Dictionary<Collider, List<EffectBase>>();
-
-    public static void AddEffect(EffectBase effect)
-    {
-        Collider target = effect._target;
-        if (!EffectDictionary.ContainsKey(target))
-            EffectDictionary[target] = new List<EffectBase>();
-        EffectBase existingEffect = FindExistingEffect(EffectDictionary[target], effect);
-        if (existingEffect != null)
-        {
-            existingEffect.ResetEffect();
-        }
-        else
-        {
-            EffectDictionary[target].Add(effect);
-            effect.ApplyEffect();
-        }
-        
-    }
-
-    private static EffectBase FindExistingEffect(List<EffectBase> effectList, EffectBase searchEffect)
-    {
-        foreach (EffectBase effect in effectList)
-        {
-            if (effect == searchEffect)
-                return effect;
-        }
-        return null;
-    }
-
-    private static void RemoveEffect(EffectBase effect)
-    {
-        Collider target = effect._target;
-        if (EffectDictionary.ContainsKey(target))
-        {
-            EffectDictionary[target].Remove(effect);
-            effect.RemoveEffect();
-            if (EffectDictionary[target].Count > 0)//xóa khỏi dictionary nếu ko còn effect
-            {
-                EffectDictionary.Remove(target);
-            }
-        }
-    }
-    
-    private void Update()
-    {
-        foreach (var pair in EffectDictionary)
-        {
-            List<EffectBase> effectsToRemove = new List<EffectBase>();
-            foreach (EffectBase effect in pair.Value)
-            {
-                if (effect.UpdateEffect())
-                {
-                    effectsToRemove.Add(effect);
-                }
-            }
-
-            foreach (EffectBase effect in effectsToRemove)
-            {
-                RemoveEffect(effect);
-            }
-        }
-    }
-    
-    #endregion
+   
     
     // #region Octree Implementation
     // [HideInInspector] public List<GameObject> objects = new List<GameObject>();//Các object đưa vào Octree

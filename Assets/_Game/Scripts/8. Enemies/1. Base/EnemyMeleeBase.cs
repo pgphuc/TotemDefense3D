@@ -58,6 +58,7 @@ public class EnemyMeleeBase : EnemyBase
         base.OnInit();
         //State khởi đầu
         StateMachine.Initialize(MoveState);
+        goldAmount = 1;
     }
 
     protected override void InitAllComponents()

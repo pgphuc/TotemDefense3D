@@ -21,6 +21,7 @@ public class MinionBase : GameUnit
     
     #endregion
     
+    
     #region event implementation
 
     protected override void OnTargetDeath(GameUnit unit)

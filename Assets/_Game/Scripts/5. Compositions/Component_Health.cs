@@ -28,11 +28,12 @@ public class Component_Health : ComponentBase, IComponentHealth
     public void TakeDamage(float damage)
     {
         CurrentHealth -= damage;
+        _owner.InvokeHealthChanged();
         if (CurrentHealth <= 0)
         {
             _isActive = false;
             _owner.OnDespawn();
         }
     }
-    
+
 }

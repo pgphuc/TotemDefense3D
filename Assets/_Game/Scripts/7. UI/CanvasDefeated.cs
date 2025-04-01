@@ -15,10 +15,11 @@ public class CanvasDefeated : UICanvas
     public void MainMenuButton()
     {
         CloseDirectly();
-        UIManager.Instance.OpenUI<CanvasMainMenu>();
+        GameManager.Instance.BackToMainMenu();
     }
     public void ReplayButton()
     {
-        //TODO: chơi lại màn
+        CloseDirectly();
+        GameManager.Instance.Replay();
     }
 }

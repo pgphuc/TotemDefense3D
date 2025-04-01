@@ -6,6 +6,7 @@ using UnityEngine.Serialization;
 
 public class VillageBase : GameUnit
 {
+    public static VillageBase Instance;
     #region checklog variables
     //để sau
     #endregion
@@ -45,6 +46,12 @@ public class VillageBase : GameUnit
     #endregion
     
     #region GameUnit Implementation
+
+    public override void Awake()
+    {
+        base.Awake();
+        Instance = this;
+    }
     protected override void StateMachineConstructor()
     {
         base.StateMachineConstructor();
@@ -76,10 +83,17 @@ public class VillageBase : GameUnit
         _spawnerComponent.OnInit();
         _healthComponent.OnInit();
     }
+
+    public override void OnDespawn()
+    {
+        base.OnDespawn();
+        OnDefeated?.Invoke();
+    }
     #endregion
     
     #region event implementation
-    
+
+    public static event Action OnDefeated;
     private void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("MeleeEnemy") && !other.CompareTag("RangedEnemy"))

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +11,7 @@ public class CanvasGameplay : UICanvas
     [SerializeField] private TextMeshProUGUI coinText;
     [SerializeField] private TextMeshProUGUI healthText;
 
+    [SerializeField] private Button startButton;
     
     #region territory info
     [SerializeField] private GameObject infoPanel;
@@ -20,51 +22,60 @@ public class CanvasGameplay : UICanvas
     private TerritoryGrid selectedTerritoryGrid;
     private Renderer componentRenderer;
     private Color? originalColor;
+
+    private bool isShoping;
     #endregion
+    
+    private GameUnit village;
+    
     private void OnEnable()
     {
         PlayerInteraction.OnSelectTerritoryGrid += ShowTerritoryPanel;
         PlayerInteraction.OnDeselectTerritoryGrid += HideTerritoryPanel;
         PlayerInteraction.OnDeselectTerritoryGrid += ResetTerritoryColour;
+        PlayerInteraction.OnGoldAmountChanged += UpdateCoin;
+
     }
 
     public override void Setup()
     {
         base.Setup();
-        UpdateCoin(0);
-        UpdateHealth(100);
+        VillageBase.Instance.OnHealthChanged += HandlehealthChanged;
+        UpdateHealth(VillageBase.Instance._healthComponent.MaxHealth);
+        
+        PlayerInteraction.Instance.OnInit();
+        UpdateCoin(PlayerInteraction.GoldAmount);
+        
+        startButton.gameObject.SetActive(true);
+        
+        isShoping = false;
     }
 
-    public override void Open()
-    {
-        base.Open();
-    }
-
-    public override void Close(float time)
-    {
-        base.Close(time);
-    }
-
-    public override void CloseDirectly()
-    {
-        base.CloseDirectly();
-    }
+    
+    #region Event functions (Health + coin)
 
     private void UpdateCoin(int coin)
     {
         coinText.text = coin.ToString();
     }
 
-    private void UpdateHealth(int health)
+    private void HandlehealthChanged(GameUnit unit)
+    {
+        UpdateHealth(VillageBase.Instance._healthComponent.CurrentHealth);
+    }
+    private void UpdateHealth(float health)
     {
         healthText.text = health.ToString();
     }
-
+    #endregion
+    
+    
+    #region player controller
     private void ShowTerritoryPanel(TerritoryGrid grid)//làm sau
     {
         if (selectedTerritoryGrid == null)
         {
-            infoPanel.SetActive(true);
+            isShoping = true;
             selectedTerritoryGrid = grid;
             CheckTerritoryGrid(selectedTerritoryGrid);
         }
@@ -161,11 +172,11 @@ public class CanvasGameplay : UICanvas
 
     private void HideTerritoryPanel(TerritoryGrid grid)
     {
-        if (!infoPanel.activeSelf)
+        if (!isShoping)
             return;
         selectedTerritoryGrid = null;
         DeactiveAllButton();
-        infoPanel.SetActive(false);
+        isShoping = false;
     }
     private void ResetTerritoryColour(TerritoryGrid grid)
     {
@@ -202,8 +213,21 @@ public class CanvasGameplay : UICanvas
     public void SettingsButton()
     {
         UIManager.Instance.OpenUI<CanvasSettings>().SetState(this);
+        if (GameManager.Instance.IsInPlayingState())
+        {
+            GameManager.Instance.PauseGame();
+        }
     }
 
+    public void StartWaveButton()
+    {
+        GameManager.Instance.StartPlaying();
+        startButton.gameObject.SetActive(false);
+    }
+    #endregion
+
+    
+    #region Shop button
     private void HandlePanelAfterBuying()
     {
         PlayerInteraction.Instance.checkInfoGrid = null;
@@ -215,56 +239,95 @@ public class CanvasGameplay : UICanvas
     {
         if (!selectedTerritoryGrid)
             return;
-        foreach (TerritoryGrid grid in MapManager.gridDictionary[selectedTerritoryGrid.territoryID])
+
+        if (PlayerInteraction.GoldAmount >= 20)
         {
-            grid.UnlockGrid();
+            PlayerInteraction.GoldAmount -= 20;
+            UpdateCoin(PlayerInteraction.GoldAmount);
+            foreach (TerritoryGrid grid in MapManager.gridDictionary[selectedTerritoryGrid.territoryID])
+            {
+                grid.UnlockGrid();
+            }
         }
+
         HandlePanelAfterBuying();
     }
 
     public void BuyBarrackButton()
     {
-        selectedTerritoryGrid.BuildBarrack();
-        selectedTerritoryGrid.gridStructure = GridStructure.Barrack;
+        if (PlayerInteraction.GoldAmount >= 10)
+        {
+            PlayerInteraction.GoldAmount -= 10;
+            UpdateCoin(PlayerInteraction.GoldAmount);
+            selectedTerritoryGrid.BuildBarrack();
+            selectedTerritoryGrid.gridStructure = GridStructure.Barrack;
+        }
         
         HandlePanelAfterBuying();
     }
 
     public void EarthTotemButton()//check lại
     {
-        selectedTerritoryGrid.BuildEarthTotem();
-        selectedTerritoryGrid.gridStructure = GridStructure.Totem;
-        
+        if (PlayerInteraction.GoldAmount >= 10)
+        {
+            PlayerInteraction.GoldAmount -= 10;
+            UpdateCoin(PlayerInteraction.GoldAmount);
+            selectedTerritoryGrid.BuildEarthTotem();
+            selectedTerritoryGrid.gridStructure = GridStructure.Totem;
+        }
+
         HandlePanelAfterBuying();
     }
     public void FireTotemButton()//check lại
     {
-        selectedTerritoryGrid.BuildFireTotem();
-        selectedTerritoryGrid.gridStructure = GridStructure.Totem;
+        if (PlayerInteraction.GoldAmount >= 10)
+        {
+            selectedTerritoryGrid.BuildFireTotem();
+            selectedTerritoryGrid.gridStructure = GridStructure.Totem;
+            PlayerInteraction.GoldAmount -= 10;
+            UpdateCoin(PlayerInteraction.GoldAmount);
+        }
         
         HandlePanelAfterBuying();
     }
     public void IceTotemButton()//check lại
     {
-        selectedTerritoryGrid.BuildIceTotem();
-        selectedTerritoryGrid.gridStructure = GridStructure.Totem;
-        
+        if (PlayerInteraction.GoldAmount >= 10)
+        {
+            PlayerInteraction.GoldAmount -= 10;
+            UpdateCoin(PlayerInteraction.GoldAmount);
+            selectedTerritoryGrid.BuildIceTotem();
+            selectedTerritoryGrid.gridStructure = GridStructure.Totem;
+        }
+
         HandlePanelAfterBuying();
     }
     public void WindTotemButton()//check lại
     {
-        selectedTerritoryGrid.BuildWindTotem();
-        selectedTerritoryGrid.gridStructure = GridStructure.Totem;
-        
+        if (PlayerInteraction.GoldAmount >= 10)
+        {
+            PlayerInteraction.GoldAmount -= 10;
+            UpdateCoin(PlayerInteraction.GoldAmount);
+            selectedTerritoryGrid.BuildWindTotem();
+            selectedTerritoryGrid.gridStructure = GridStructure.Totem;
+        }
+
         HandlePanelAfterBuying();
     }
     public void LightningTotemButton()//check lại
     {
-        selectedTerritoryGrid.BuildLightningTotem();
-        selectedTerritoryGrid.gridStructure = GridStructure.Totem;
-        
+        if (PlayerInteraction.GoldAmount >= 10)
+        {
+            PlayerInteraction.GoldAmount -= 10;
+            UpdateCoin(PlayerInteraction.GoldAmount);
+            selectedTerritoryGrid.BuildLightningTotem();
+            selectedTerritoryGrid.gridStructure = GridStructure.Totem;
+        }
+
         HandlePanelAfterBuying();
     }
-    
+
+    #endregion
+   
     
 }
