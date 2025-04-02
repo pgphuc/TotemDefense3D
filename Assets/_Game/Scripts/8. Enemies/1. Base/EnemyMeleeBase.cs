@@ -6,8 +6,7 @@ using UnityEngine.AI;
 public class EnemyMeleeBase : EnemyBase
 {
     #region checklog variables
-
-    [SerializeField] private string health;
+    //để sau
     #endregion
     
     #region state machine references
@@ -22,7 +21,6 @@ public class EnemyMeleeBase : EnemyBase
     public virtual void Update()
     {
         StateMachine.currentState.OnFrameUpdate();
-        health = _healthComponent.CurrentHealth.ToString();
     }
 
     public virtual void FixedUpdate()
@@ -44,10 +42,10 @@ public class EnemyMeleeBase : EnemyBase
     protected override void ComponentConstructor()
     {
         //health
-        _healthComponent = new Component_Health(this, transform,15f);
+        _healthComponent = new Component_Health(this, transform,10f);
         components.Add(_healthComponent);
         //attack
-        _attackComponent = new Component_Attack_Enemy(this, 3f, 1.5f);
+        _attackComponent = new Component_Attack_Enemy(this, 1f, 1f);
         components.Add(_attackComponent);
         //move
         _moveComponent = new Component_Move_Enemy(this, GetComponent<NavMeshAgent>(), 3f);

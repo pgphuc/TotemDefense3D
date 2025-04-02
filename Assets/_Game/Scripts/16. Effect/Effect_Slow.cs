@@ -9,6 +9,7 @@ public class Effect_Slow : EffectBase
         _target = ComponentCache.GetEnemyMoveComponent(target);
         _slowAmount = slowAmount;
     }
+    
     private Component_Move_Enemy _target;
     private float _slowAmount;
     public override void ApplyEffect()

@@ -127,12 +127,15 @@ public class GameUnit : MonoBehaviour
         OnDeath?.Invoke(this);
         GameManager.OnPausedGame -= HandlePausedGame;
         GameManager.OnResumeGame -= HandleResumeGame;
-        SimplePool.Despawn(this);
+        if (isActiveAndEnabled)
+        {
+            StartCoroutine(nameof(SetActiveFalse));
+        }
     }
 
     private IEnumerator SetActiveFalse()
     {
-        yield return new WaitForFixedUpdate();
+        yield return new WaitForSeconds(1f);
         SimplePool.Despawn(this);
     }
     #region Animation Triggers implementation

@@ -31,12 +31,14 @@ public class Component_Move_Enemy : ComponentBase, IComponentMove
     {
         if (!_owner.isActiveAndEnabled)
             return;
+        _owner._animator.SetBool("isWalking", false);
         _agent.isStopped = true;
         _agent.velocity = Vector3.zero;
     }
 
     public void StartMoving()
     {
+        _owner._animator.SetBool("isWalking", true);
         _agent.isStopped = false;
         _owner._healthComponent._isBlocked = false;
         SetMoveTarget(FindDestination());

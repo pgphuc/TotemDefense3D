@@ -14,7 +14,6 @@ public class State_RangedAttack_Enemy_Ranged : StateBase<EnemyRangedBase>
     {
         base.OnEnter();
         _unit._attackComponent._lastAttackTime = Time.time;
-        _unit.SetState(this);
     }
 
     public override void OnExit()
@@ -28,8 +27,6 @@ public class State_RangedAttack_Enemy_Ranged : StateBase<EnemyRangedBase>
         base.OnFrameUpdate();
         if (_unit._attackComponent._attackTarget == null || !_unit._attackComponent._attackTarget._isActive)
         {
-            _unit._attackMeleeCheck.HandleExit();
-            _unit._attackRangedCheck.HandleExit();
             _unit.StateMachine.ChangeState(_unit.MoveState); // Quay lại tuần tra nếu không có mục tiêu
         }
         else if (Time.time - _unit._attackComponent._lastAttackTime >= _unit._attackComponent._attackSpeed)

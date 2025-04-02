@@ -6,6 +6,7 @@ public class Bullet_Fire : BulletBase
 {
     private float _burnDuration = 3f;
     private float _damagePerSecond = 1f;
+    [SerializeField] private GameObject _burnVFX;
     
     public override void Shoot(Vector3 start, Vector3 end)
     {
@@ -33,7 +34,15 @@ public class Bullet_Fire : BulletBase
     {
         base.HandleBulletHit(other);
         EffectManager.AddEffect(new Effect_Burn(other, _burnDuration, _damagePerSecond));
+        GameObject burnVFX = Instantiate(_burnVFX, other.transform.position, other.transform.rotation, other.transform);
+        CoroutineManager.StartRoutine(DestroyVFX(burnVFX));
         Invoke(nameof(OnDespawn), 1f);
+    }
+
+    private IEnumerator DestroyVFX(GameObject effectVFX)
+    {
+        yield return new WaitForSeconds(_burnDuration);
+        Destroy(effectVFX);
     }
     
 }

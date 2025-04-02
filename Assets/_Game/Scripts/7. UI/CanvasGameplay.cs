@@ -40,6 +40,8 @@ public class CanvasGameplay : UICanvas
     public override void Setup()
     {
         base.Setup();
+        selectedTerritoryGrid = null;
+        
         VillageBase.Instance.OnHealthChanged += HandlehealthChanged;
         UpdateHealth(VillageBase.Instance._healthComponent.MaxHealth);
         
@@ -77,7 +79,7 @@ public class CanvasGameplay : UICanvas
         {
             isShoping = true;
             selectedTerritoryGrid = grid;
-            CheckTerritoryGrid(selectedTerritoryGrid);
+            CheckTerritoryGrid(grid);
         }
     }
 
@@ -244,6 +246,8 @@ public class CanvasGameplay : UICanvas
         {
             PlayerInteraction.GoldAmount -= 20;
             UpdateCoin(PlayerInteraction.GoldAmount);
+            SoundManager.Instance.PlaySoundOneShot(SoundManager.Instance.buildTotem);
+            
             foreach (TerritoryGrid grid in MapManager.gridDictionary[selectedTerritoryGrid.territoryID])
             {
                 grid.UnlockGrid();
@@ -259,6 +263,8 @@ public class CanvasGameplay : UICanvas
         {
             PlayerInteraction.GoldAmount -= 10;
             UpdateCoin(PlayerInteraction.GoldAmount);
+            SoundManager.Instance.PlaySoundOneShot(SoundManager.Instance.buildTotem);
+            
             selectedTerritoryGrid.BuildBarrack();
             selectedTerritoryGrid.gridStructure = GridStructure.Barrack;
         }
@@ -272,6 +278,8 @@ public class CanvasGameplay : UICanvas
         {
             PlayerInteraction.GoldAmount -= 10;
             UpdateCoin(PlayerInteraction.GoldAmount);
+            SoundManager.Instance.PlaySoundOneShot(SoundManager.Instance.buildTotem);
+            
             selectedTerritoryGrid.BuildEarthTotem();
             selectedTerritoryGrid.gridStructure = GridStructure.Totem;
         }
@@ -282,10 +290,12 @@ public class CanvasGameplay : UICanvas
     {
         if (PlayerInteraction.GoldAmount >= 10)
         {
-            selectedTerritoryGrid.BuildFireTotem();
-            selectedTerritoryGrid.gridStructure = GridStructure.Totem;
             PlayerInteraction.GoldAmount -= 10;
             UpdateCoin(PlayerInteraction.GoldAmount);
+            SoundManager.Instance.PlaySoundOneShot(SoundManager.Instance.buildTotem);
+            
+            selectedTerritoryGrid.BuildFireTotem();
+            selectedTerritoryGrid.gridStructure = GridStructure.Totem;
         }
         
         HandlePanelAfterBuying();
@@ -296,6 +306,8 @@ public class CanvasGameplay : UICanvas
         {
             PlayerInteraction.GoldAmount -= 10;
             UpdateCoin(PlayerInteraction.GoldAmount);
+            SoundManager.Instance.PlaySoundOneShot(SoundManager.Instance.buildTotem);
+            
             selectedTerritoryGrid.BuildIceTotem();
             selectedTerritoryGrid.gridStructure = GridStructure.Totem;
         }
@@ -308,6 +320,8 @@ public class CanvasGameplay : UICanvas
         {
             PlayerInteraction.GoldAmount -= 10;
             UpdateCoin(PlayerInteraction.GoldAmount);
+            SoundManager.Instance.PlaySoundOneShot(SoundManager.Instance.buildTotem);
+
             selectedTerritoryGrid.BuildWindTotem();
             selectedTerritoryGrid.gridStructure = GridStructure.Totem;
         }
@@ -320,6 +334,8 @@ public class CanvasGameplay : UICanvas
         {
             PlayerInteraction.GoldAmount -= 10;
             UpdateCoin(PlayerInteraction.GoldAmount);
+            SoundManager.Instance.PlaySoundOneShot(SoundManager.Instance.buildTotem);
+
             selectedTerritoryGrid.BuildLightningTotem();
             selectedTerritoryGrid.gridStructure = GridStructure.Totem;
         }

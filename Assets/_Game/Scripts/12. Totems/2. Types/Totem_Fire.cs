@@ -7,7 +7,7 @@ public class Totem_Fire : TotemBase
     protected override void ComponentConstructor()
     {
         base.ComponentConstructor();
-        _attackComponent = new Component_Attack_Totem(this, _bulletSpawnPoint, 10f, 3f, 9f, 1.1f);
+        _attackComponent = new Component_Attack_Totem(this, _bulletSpawnPoint, 1f, 3f, 9f, 1.1f);
         components.Add(_attackComponent);
     }
 }

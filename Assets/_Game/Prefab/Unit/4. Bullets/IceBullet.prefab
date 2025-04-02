@@ -150,3 +150,4 @@ MonoBehaviour:
   _isGrounded: 0
   _bulletPath: []
   _currentPathIndex: 0
+  _slowVFX: {fileID: 6167430539028096426, guid: 5cf3544b78f268b45aa97e9c6e0b0a66, type: 3}

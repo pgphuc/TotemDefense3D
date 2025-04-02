@@ -28,8 +28,14 @@ public class Component_Health : ComponentBase, IComponentHealth
     public void TakeDamage(float damage)
     {
         CurrentHealth -= damage;
+        
+        if (_owner is VillageBase)
+        {
+            SoundManager.Instance.PlaySoundOneShot(SoundManager.Instance.villageDamaged);
+        }
+        
         _owner.InvokeHealthChanged();
-        if (CurrentHealth <= 0)
+        if (CurrentHealth <= 0 && _isActive)
         {
             _isActive = false;
             _owner.OnDespawn();

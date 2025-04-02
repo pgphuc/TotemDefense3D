@@ -19,6 +19,7 @@ public class Component_Attack_Minion :ComponentBase, IComponentAttack
     public float _lastAttackTime { get; set; }
     public float _damage { get; set; }
     public float _attackSpeed { get; set; }
+    
 
     public void StartAttack()
     {
@@ -39,6 +40,7 @@ public class Component_Attack_Minion :ComponentBase, IComponentAttack
     {
         _lastAttackTime = Time.time;
         _attackTarget.TakeDamage(_damage);
+        _owner._animator.SetTrigger("Attack");
     }
     public void RangedAttack()
     {

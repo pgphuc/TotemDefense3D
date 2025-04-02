@@ -36,6 +36,7 @@ public class Component_Move_Minion :ComponentBase, IComponentMove
 
     public void StopMoving()
     {
+        _owner._animator.SetBool("isWalking", false);
         _agent.isStopped = true;
         _isMovingToEnemy = false;
         _agent.velocity = Vector3.zero;
@@ -43,6 +44,7 @@ public class Component_Move_Minion :ComponentBase, IComponentMove
 
     public void StartMoving()
     {
+        _owner._animator.SetBool("isWalking", true);
         _agent.isStopped = false;
         _isMovingToEnemy = false;
         _owner._healthComponent._isBlocked = false;

@@ -13,7 +13,6 @@ public class State_Move_Enemy_Ranged : StateBase<EnemyRangedBase>
     {
         base.OnEnter();
         _unit._moveComponent.StartMoving();
-        _unit.SetState(this);
     }
 
     public override void OnExit()
@@ -25,20 +24,20 @@ public class State_Move_Enemy_Ranged : StateBase<EnemyRangedBase>
     public override void OnFrameUpdate()
     {
         base.OnFrameUpdate();
-        _unit._moveComponent.Moving();
-        // if (!_unit._attackComponent._target || !_unit._attackComponent._target._isActive)
+        // _unit._moveComponent.Moving();
+        // // if (!_unit._attackComponent._target || !_unit._attackComponent._target._isActive)
+        // // {
+        // //     _unit._attackRangedCheck.HandleExit();
+        // //     _unit._attackMeleeCheck.HandleExit();
+        // // }
+        // if (_unit._attackMeleeCheck.IsOwnerInCheck)
         // {
-        //     _unit._attackRangedCheck.HandleExit();
-        //     _unit._attackMeleeCheck.HandleExit();
+        //     _unit.StateMachine.ChangeState(_unit.MeleeAttackState);//Đánh cận chiến
         // }
-        if (_unit._attackMeleeCheck.IsOwnerInCheck)
-        {
-            _unit.StateMachine.ChangeState(_unit.MeleeAttackState);//Đánh cận chiến
-        }
-        else if (_unit._attackRangedCheck.IsOwnerInCheck)
-        {
-            _unit.StateMachine.ChangeState(_unit.RangedAttackState);//Đánh xa
-        }
+        // else if (_unit._attackRangedCheck.IsOwnerInCheck)
+        // {
+        //     _unit.StateMachine.ChangeState(_unit.RangedAttackState);//Đánh xa
+        // }
     }
 
     public override void OnPhysicsUpdate()

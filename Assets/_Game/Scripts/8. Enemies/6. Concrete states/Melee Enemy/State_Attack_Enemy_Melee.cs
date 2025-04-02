@@ -26,7 +26,7 @@ public class State_Attack_Enemy_Melee : StateBase<EnemyMeleeBase>
     public override void OnFrameUpdate()
     {
         base.OnFrameUpdate();
-        if (_unit._attackComponent._attackTarget == null)
+        if (_unit._attackComponent._attackTarget == null || _unit._attackComponent._attackTarget._isActive == false)
         {
             _unit.StateMachine.ChangeState(_unit.MoveState); //Quay lại tuần tra nếu không có mục tiêu
         }

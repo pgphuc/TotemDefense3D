@@ -1,10 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 // ReSharper disable Unity.PerformanceAnalysis
 public static class ComponentCache
 {
+    public static void ResetCache()
+    {
+        GameUnitCache = new Dictionary<Collider, GameUnit>();
+        HealthCache = new Dictionary<Collider, Component_Health>();
+        EnemyMoveCache = new Dictionary<Collider, Component_Move_Enemy>();
+        TerritoryGridCache =  new Dictionary<Collider, TerritoryGrid>();
+        
+        GridRendererCache = new Dictionary<TerritoryGrid, Renderer>();
+        ColliderCache = new Dictionary<GameUnit, Collider>();
+    }
     private static Dictionary<GameUnit, Collider> ColliderCache = new Dictionary<GameUnit, Collider>();
     public static Collider GetCollider(GameUnit gameUnit)
     {

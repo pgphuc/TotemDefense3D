@@ -13,14 +13,23 @@ public class EnemyBase : GameUnit
     public Component_Health _healthComponent;
     public Component_Attack_Enemy _attackComponent;
     public Component_Move_Enemy _moveComponent;
-
-
+    
+    //animator
+    public Animator _animator;
     #endregion
 
     public override void OnInit()
     {
         base.OnInit();
-        
+        _animator = GetComponentInChildren<Animator>();
+    }
+
+    public override void OnDespawn()
+    {
+        base.OnDespawn();
+        EnemyWaveManager.Instance.enemyOnScene.Remove(this);
+        _animator.SetTrigger("Dead");
+        _moveComponent.StopMoving();
     }
 
     #region event implementation

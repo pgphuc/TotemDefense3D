@@ -55,7 +55,7 @@ public class TotemBase : GameUnit
     protected override void ComponentConstructor()
     {
         base.ComponentConstructor();
-        _healthComponent = new Component_Health(this, transform, 100f);
+        _healthComponent = new Component_Health(this, transform, 20f);
         components.Add(_healthComponent);
         _checkComponent = new Component_Check_Totem(this);
         components.Add(_checkComponent);

@@ -71,6 +71,9 @@ public class MapManager: Singleton<MapManager>
 
     public void  OnDestroy()
     {
+        surroundBasePoints = new Dictionary<Vector3, bool>();
+        gridDictionary = new Dictionary<int, List<TerritoryGrid>>();
+        BarrackNotFullList = new  List<BarrackBase>();
         foreach (GameObject obj in GeneratedObjects)
         {
             Destroy(obj);
@@ -146,6 +149,12 @@ public class MapManager: Singleton<MapManager>
             villageCollider = village.GetComponent<Collider>();
             GeneratedObjects.Add(village);
             return;
+        }
+        if (prefab == enemyPortalPrefab)
+        {
+            GameObject portal = Instantiate(prefab, generatePosition, Quaternion.identity, tf);
+            GeneratedObjects.Add(portal);
+            EnemyWaveManager.Instance.spawnerPosition.Add(portal.transform.position);
         }
         GameObject obj = Instantiate(prefab, generatePosition, Quaternion.identity, tf);
         GeneratedObjects.Add(obj);

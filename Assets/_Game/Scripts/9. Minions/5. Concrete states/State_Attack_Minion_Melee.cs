@@ -23,7 +23,7 @@ public class State_Attack_Minion_Melee :StateBase<MinionMeleeBase>
     public override void OnFrameUpdate()
     {
         base.OnFrameUpdate();
-        if (_unit._attackComponent._attackTarget == null)
+        if (_unit._attackComponent._attackTarget == null || _unit._attackComponent._attackTarget._isActive == false)
         {
             _stateMachine.ChangeState(_unit.MoveState); // Quay lại tuần tra nếu không có mục tiêu
         }

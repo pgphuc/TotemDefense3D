@@ -7,6 +7,7 @@ public class MinionMeleeBase : MinionBase
 {
     #region checklog variables
     //để sau
+    [SerializeField] private string currentHP;
     #endregion
     
     #region variables that need instantiate at Awake [HideInInspector]
@@ -22,7 +23,7 @@ public class MinionMeleeBase : MinionBase
     public virtual void Update()
     {
         StateMachine.currentState.OnFrameUpdate();
-        
+        currentHP = _healthComponent.CurrentHealth.ToString();
             
     }
 
@@ -45,10 +46,10 @@ public class MinionMeleeBase : MinionBase
     protected override void ComponentConstructor()
     {
         //health
-        _healthComponent = new Component_Health(this,transform, 15f);
+        _healthComponent = new Component_Health(this,transform, 3f);
         components.Add(_healthComponent);
         //attack
-        _attackComponent = new Component_Attack_Minion(this, 3f, 1.5f);
+        _attackComponent = new Component_Attack_Minion(this, 1f, 1f);
         components.Add(_attackComponent);
         //move
         _moveComponent = new Component_Move_Minion(this, GetComponent<NavMeshAgent>(), 3f, 6.5f);

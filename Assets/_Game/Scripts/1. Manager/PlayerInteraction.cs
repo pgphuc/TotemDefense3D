@@ -24,7 +24,10 @@ public class PlayerInteraction : Singleton<PlayerInteraction>
     {
         GoldAmount = 100;
         isPressing = false;
-        EnemySpawner.EnemySpawned += SubcribeEnemyOnDeath;
+        mouseDownGrid = null;
+        checkInfoGrid = null;
+        
+        EnemyWaveManager.EnemySpawned += SubcribeEnemyOnDeath;
         
     }
     void Update()

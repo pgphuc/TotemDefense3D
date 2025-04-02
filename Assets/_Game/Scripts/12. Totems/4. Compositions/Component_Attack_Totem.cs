@@ -18,8 +18,8 @@ public class Component_Attack_Totem : ComponentBase, IComponentAttack
     public float _lastAttackTime { get; set; }
     public float _damage { get; set; }
     public float _attackSpeed { get; set; }
-    public float _bulletSpeed;
-    public float _bulletAcceleration;
+    public float _bulletSpeed { get; set; }
+    public float _bulletAcceleration { get; set; }
     public Component_Health _attackTarget { get; set; }
     public override void OnInit()
     {
@@ -31,7 +31,7 @@ public class Component_Attack_Totem : ComponentBase, IComponentAttack
         _lastAttackTime = Time.time;
         Vector3 start = _bulletSpawnPoint.position;
         Vector3 target = _attackTarget._transform.position + Vector3.down * 1.25f;
-        FireBullet(start, target);
+        ShootBullet(start, target);
         GenerateBullet();
 
     }
@@ -61,16 +61,15 @@ public class Component_Attack_Totem : ComponentBase, IComponentAttack
     private BulletBase _bullet;
     private Transform _bulletSpawnPoint;
     
-    private void FireBullet(Vector3 start, Vector3 end)
+    private void ShootBullet(Vector3 start, Vector3 end)
     {
         _bullet.Shoot(start, end);
     }
     private void GenerateBullet()
     {
-        _bullet = SimplePool.Spawn<BulletBase>(_owner._bulletPrefab.poolType, _bulletSpawnPoint.position, Quaternion.identity);
+        _bullet = SimplePool.Spawn<BulletBase>(_owner._bulletPrefab.poolType, _bulletSpawnPoint.position, _owner.transform.rotation);
         _bullet._totemAttackComponent = this;
         _bullet.OnInit();
     }
-    
     #endregion
 }

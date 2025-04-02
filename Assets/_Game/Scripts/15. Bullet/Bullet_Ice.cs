@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Bullet_Ice : BulletBase
 {
-    private float _slowDuration = 3f;
+    private float _slowDuration = 2f;
     private float _slowAmount = 0.3f;
+    [SerializeField] private GameObject _slowVFX;
     
     public override void Shoot(Vector3 start, Vector3 end)
     {
@@ -19,7 +20,7 @@ public class Bullet_Ice : BulletBase
         {
             Vector3 nextPos = _bulletPath[_currentPathIndex];
             
-            transform.rotation = Quaternion.LookRotation(nextPos - transform.position);
+            transform.rotation = Quaternion.LookRotation(nextPos - transform.position) * Quaternion.Euler(90, 0, 0);
             
             while (Vector3.Distance(transform.position, nextPos) > 0.1f)
             {
@@ -36,6 +37,13 @@ public class Bullet_Ice : BulletBase
     {
         base.HandleBulletHit(other);
         EffectManager.AddEffect(new Effect_Slow(other, _slowDuration, _slowAmount));
+        GameObject slowVFX = Instantiate(_slowVFX, other.transform.position, other.transform.rotation, other.transform);
+        CoroutineManager.StartRoutine(DestroyVFX(slowVFX));
         Invoke(nameof(OnDespawn), 1f);
+    }
+    private IEnumerator DestroyVFX(GameObject effectVFX)
+    {
+        yield return new WaitForSeconds(_slowDuration);
+        Destroy(effectVFX);
     }
 }

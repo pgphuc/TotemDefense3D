@@ -19,7 +19,23 @@ public class MinionBase : GameUnit
     public Component_Move_Minion _moveComponent;
     public Component_Check_Minion _checkComponent;
     
+    public Animator _animator;
+    
     #endregion
+
+    public override void OnInit()
+    {
+        base.OnInit();
+        _animator = GetComponentInChildren<Animator>();
+    }
+    public override void OnDespawn()
+    {
+        base.OnDespawn();
+        if (movingType is MovingType.ReachedBarrack or MovingType.ReachedVillage)
+            return;
+        _animator.SetTrigger("Dead");
+        _moveComponent.StopMoving();
+    }
     
     
     #region event implementation

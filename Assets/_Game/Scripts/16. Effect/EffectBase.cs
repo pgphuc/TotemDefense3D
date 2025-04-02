@@ -5,8 +5,8 @@ using UnityEngine;
 public class EffectBase : IEffect
 {
     public Collider _target;
-    protected float _duration;
-    protected float _elapsedTime;
+    private float _duration;
+    private float _elapsedTime;
 
     public EffectBase(Collider target, float duration)
     {   
@@ -16,7 +16,8 @@ public class EffectBase : IEffect
     }
     public virtual void ApplyEffect()
     {
-        
+        GameUnit unit = ComponentCache.GetGameUnit(_target);
+        unit.OnDeath += OnTargetDeath;
     }
 
     public virtual void RemoveEffect()
@@ -33,5 +34,11 @@ public class EffectBase : IEffect
     {
         _elapsedTime += Time.deltaTime;
         return _elapsedTime < _duration;
+    }
+
+    private void OnTargetDeath(GameUnit target)
+    {
+        RemoveEffect();
+        target.OnDeath -= OnTargetDeath;
     }
 }

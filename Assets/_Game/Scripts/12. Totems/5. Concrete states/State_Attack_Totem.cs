@@ -27,7 +27,7 @@ public class State_Attack_Totem : StateBase<TotemBase>
     public override void OnFrameUpdate()
     {
         base.OnFrameUpdate();
-        if (_unit._attackComponent._attackTarget == null)
+        if (_unit._attackComponent._attackTarget == null || _unit._attackComponent._attackTarget._isActive == false)
         {
             _stateMachine.ChangeState(_unit._idleState);
         }

@@ -4,13 +4,17 @@ using UnityEngine;
 
 public class Bullet_Lightning : BulletBase
 {
+    private Vector3 _startPos;
+    
     private const int _maxChain = 3;
-    private const float _chainRange = 15f;
+    private const float _chainRange = 30f;
     
     private int _currentChain;
     
     
     private List<Collider> hitEnemies = new List<Collider>();
+
+    [SerializeField] private GameObject lightningEffectPrefab;
 
     public override void OnInit()
     {
@@ -20,7 +24,8 @@ public class Bullet_Lightning : BulletBase
     }
     public override void Shoot(Vector3 start, Vector3 end)
     {
-        _bulletPath = BulletPathCalculator.ParabolPath(start, end);
+        _bulletPath = BulletPathCalculator.StraightPath(start, end);
+        _startPos = transform.position;
         StartCoroutine(MoveAlongPath(_bulletPath));
     }
     
@@ -29,8 +34,6 @@ public class Bullet_Lightning : BulletBase
         while (_currentPathIndex < bulletPath.Count)
         {
             Vector3 nextPos = bulletPath[_currentPathIndex];
-            
-            transform.rotation = Quaternion.LookRotation(nextPos - transform.position);
             
             while (Vector3.Distance(transform.position, nextPos) > 0.1f)
             {
@@ -46,7 +49,9 @@ public class Bullet_Lightning : BulletBase
     protected override void HandleBulletHit(Collider other)
     {
         base.HandleBulletHit(other);
+        CreateLightningEffect(_startPos, transform.position);
         hitEnemies.Add(other);
+        
         if (_currentChain >= _maxChain)
         {
             Invoke(nameof(OnDespawn), 1f);
@@ -65,6 +70,18 @@ public class Bullet_Lightning : BulletBase
             Invoke(nameof(OnDespawn), 1f);
         }
 
+    }
+
+    private void CreateLightningEffect(Vector3 startPos, Vector3 endPos)
+    {
+        GameObject effect = Instantiate(lightningEffectPrefab, startPos, Quaternion.identity);
+        LineRenderer lr = effect.GetComponent<LineRenderer>();
+        if (lr != null)
+        {
+            lr.SetPosition(0, startPos);
+            lr.SetPosition(1, endPos);
+        }
+        Destroy(effect, 0.5f);
     }
 
     private Collider FindNextEnemy(Collider other)

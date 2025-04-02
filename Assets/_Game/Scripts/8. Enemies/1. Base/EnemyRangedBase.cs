@@ -5,21 +5,10 @@ using UnityEngine.AI;
 
 public class EnemyRangedBase : EnemyBase
 {
-    [SerializeField] private string CurrentState;
 
-    public void SetState(StateBase<EnemyRangedBase> state)
-    {
-        CurrentState = state.ToString();
-    }
+    public GameUnit _bulletPrefab;
     
-    #region Serialized Fields
-    //TriggerCheck
-    public Check_AttackMelee_Enemy _attackMeleeCheck;
-    public Check_AttackRanged_Enemy _attackRangedCheck;
-    
-    #endregion
-    
-    #region variables that need instantiate at Awake [HideInInspector]
+    #region stateMachine references
     //State machine
     [HideInInspector] public StateMachine<EnemyRangedBase> StateMachine;
     [HideInInspector] public State_Move_Enemy_Ranged MoveState;
@@ -28,11 +17,7 @@ public class EnemyRangedBase : EnemyBase
     
     #endregion
     
-    #region Awake / Update / FixedUpdate
-    public override void Awake()
-    {
-        base.Awake();
-    }
+    #region unity loop functions
     public virtual void Update()
     {
         StateMachine.currentState.OnFrameUpdate();
@@ -51,9 +36,6 @@ public class EnemyRangedBase : EnemyBase
     public override void OnInit()
     {
         base.OnInit();
-        //TriggerCheck
-        _attackMeleeCheck._attackComponent = _attackComponent;
-        _attackRangedCheck._attackComponent = _attackComponent;
         //State khởi đầu
         StateMachine.Initialize(MoveState);
     }
@@ -69,10 +51,10 @@ public class EnemyRangedBase : EnemyBase
     protected override void ComponentConstructor()
     {
         //health
-        _healthComponent = new Component_Health(this, transform, 110f);
+        _healthComponent = new Component_Health(this, transform, 10f);
         components.Add(_healthComponent);
         //attack
-        _attackComponent = new Component_Attack_Enemy(this, 10f, 1.5f);
+        _attackComponent = new Component_Attack_Enemy(this, 1f, 1.5f);
         components.Add(_attackComponent);
         //move
         _moveComponent = new Component_Move_Enemy(this, GetComponent<NavMeshAgent>(), 1f);

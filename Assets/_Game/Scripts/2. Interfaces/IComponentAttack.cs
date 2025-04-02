@@ -10,4 +10,6 @@ public interface IComponentAttack
     Component_Health _attackTarget { get; set; }
     void StartAttack();
     void StopAttacking();
+    
+    
 }

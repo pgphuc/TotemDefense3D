@@ -69,6 +69,14 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+    private void Update()
+    {
+        if (EnemyWaveManager.Instance.IsGameOver() && gameState == GameState.Playing)
+        {
+            GameOver();
+        }
+    }
+
     private void MainMenuState()
     {
         Time.timeScale = 1;
@@ -88,6 +96,7 @@ public class GameManager : Singleton<GameManager>
         UIManager.Instance.CloseUIDirectly<CanvasSettings>();
         Time.timeScale = 1;
         VillageBase.OnDefeated += IsDefeated;
+        EnemyWaveManager.Instance.OnInit();
     }
 
     private void PausedState()
@@ -100,12 +109,15 @@ public class GameManager : Singleton<GameManager>
     {
         Time.timeScale = 0;
         UIManager.Instance.CloseAllUI();
+        SoundManager.Instance.musicSource.Stop();
         if (isDefeated)
         {
+            SoundManager.Instance.PlaySoundOneShot(SoundManager.Instance.defeated);
             UIManager.Instance.OpenUI<CanvasDefeated>();
         }
         else
         {
+            SoundManager.Instance.PlaySoundOneShot(SoundManager.Instance.victory);
             UIManager.Instance.OpenUI<CanvasVictory>();
         }
     }
@@ -118,6 +130,7 @@ public class GameManager : Singleton<GameManager>
 
     private void ResetGame()
     {
+        ComponentCache.ResetCache();
         SimplePool.CollectAll();
         UIManager.Instance.CloseAllUI();
         CoroutineManager.StopAllRoutine();

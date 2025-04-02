@@ -7,7 +7,7 @@ public class Totem_Ice : TotemBase
     protected override void ComponentConstructor()
     {
         base.ComponentConstructor();
-        _attackComponent = new Component_Attack_Totem(this, _bulletSpawnPoint, 5f, 1.5f, 5f, 1.3f);
+        _attackComponent = new Component_Attack_Totem(this, _bulletSpawnPoint, 3f, 1f, 10f, 1.3f);
         components.Add(_attackComponent);
     }
 }

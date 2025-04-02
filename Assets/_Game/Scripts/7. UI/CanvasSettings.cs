@@ -35,6 +35,7 @@ public class CanvasSettings : UICanvas
     public void ClosedButton()
     {
         CloseDirectly();
+        UIManager.Instance.OpenUI<CanvasMainMenu>();
     }
 
     public void ContinueButton()

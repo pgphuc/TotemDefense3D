@@ -66,7 +66,7 @@ public class VillageBase : GameUnit
         base.ComponentConstructor();
         _spawnerComponent = new Component_Spawner_Village(this, 20);
         components.Add(_spawnerComponent);
-        _healthComponent = new Component_Health(this, transform, 100f);
+        _healthComponent = new Component_Health(this, transform, 20f);
         components.Add(_healthComponent);
         _checkComponent = new Component_Check_Defender(transform, _spawnerComponent);
         components.Add(_checkComponent);
