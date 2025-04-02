@@ -7,10 +7,11 @@ using UnityEngine.AI;
 public class MapManager: Singleton<MapManager>
 {
     #region Global variables used by other classes
-    public Dictionary<Vector3, bool> surroundBasePoints = new Dictionary<Vector3, bool>();
+    public Dictionary<Vector3, bool> surroundBasePoints = new Dictionary<Vector3, bool>();//Enemy move target
+    //Territory Management --> CanvasGameplay
     public static Dictionary<int, List<TerritoryGrid>> gridDictionary = new Dictionary<int, List<TerritoryGrid>>();
-    public List<BarrackBase> BarrackNotFullList = new List<BarrackBase>();
-    [HideInInspector] public GameObject village;
+    public List<BarrackBase> BarrackNotFullList = new List<BarrackBase>();//Component_Check_Defender + Component_Move_Minion
+    [HideInInspector] public GameObject village;//Component_Check_Totem + Component_Move_Enemy + Component_Move_Minion
     [HideInInspector] public Collider villageCollider;
     #endregion
     
@@ -52,7 +53,7 @@ public class MapManager: Singleton<MapManager>
     
     #region Start functions
 
-    public void OnInit()
+    public void OnInit()//GameManager
     {
         GenerateGround();
         startPosition = FindStartPosition();
@@ -69,7 +70,7 @@ public class MapManager: Singleton<MapManager>
     #region restart functions
     private List<GameObject> GeneratedObjects = new List<GameObject>();
 
-    public void  OnDestroy()
+    public void  OnDestroy()//GameManager
     {
         surroundBasePoints = new Dictionary<Vector3, bool>();
         gridDictionary = new Dictionary<int, List<TerritoryGrid>>();
@@ -194,12 +195,12 @@ public class MapManager: Singleton<MapManager>
         }
         gridDictionary[territoryID].Add(grid);
     }
-    public bool CheckBarrackAvailability()
+    public bool CheckBarrackAvailability()//Component_Move_Minion
     {
         
         return BarrackNotFullList.Count > 0;
     }
-    public int NumberOfMinionRequired()
+    public int NumberOfMinionRequired()//Component_Spawner_Village
     {
         int numberOfMinions = 0;
         foreach (BarrackBase barrack in BarrackNotFullList)
