@@ -5,8 +5,9 @@ using UnityEngine.AI;
 
 public class EnemyRangedBase : EnemyBase
 {
-
+    #region Bullet references
     public GameUnit _bulletPrefab;
+    #endregion
     
     #region stateMachine references
     //State machine
@@ -18,6 +19,7 @@ public class EnemyRangedBase : EnemyBase
     #endregion
     
     #region unity loop functions
+    
     public virtual void Update()
     {
         StateMachine.currentState.OnFrameUpdate();
@@ -59,6 +61,8 @@ public class EnemyRangedBase : EnemyBase
         //move
         _moveComponent = new Component_Move_Enemy(this, GetComponent<NavMeshAgent>(), 1f);
         components.Add(_moveComponent);
+        _checkComponent = new Component_Check_EnemyRanged(this);
+        components.Add(_checkComponent);
     }
 
     protected override void InitAllComponents()
@@ -66,6 +70,39 @@ public class EnemyRangedBase : EnemyBase
         _healthComponent.OnInit();
         _attackComponent.OnInit();
         _moveComponent.OnInit();
+        _checkComponent.OnInit();
+    }
+
+    #endregion
+
+    #region Event implementations
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!other.CompareTag("MeleeMinion") && !other.CompareTag("Totem"))
+            return;
+        _checkComponent.HandleEnter(other);
+        SubcribeAllEvents(ComponentCache.GetGameUnit(other));
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (!other.CompareTag("MeleeMinion") && !other.CompareTag("Totem"))
+            return;
+        _checkComponent.HandleExit(other);
+        UnSubcribeAllEvents(ComponentCache.GetGameUnit(other));
+    }
+    protected override void OnTargetDeath(GameUnit unit)
+    {
+        base.OnTargetDeath(unit);
+        if (unit is not MinionBase)
+            return;
+        Collider target = ComponentCache.GetCollider(unit);
+        _checkComponent.HandleExit(target);
+        if (_attackComponent.EnemyKilledByOwner(target))
+        {
+            _attackComponent._attackTarget = null;
+        }
     }
 
     #endregion

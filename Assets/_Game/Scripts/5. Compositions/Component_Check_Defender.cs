@@ -80,7 +80,7 @@ public class Component_Check_Defender : ComponentBase
     {
         float minDistance = float.MaxValue;
         BarrackBase target = null;
-        foreach (BarrackBase barrack in MapManager.Instance.BarrackNotFullList)
+        foreach (BarrackBase barrack in MapManager.Instance.BarrackList)
         {
             float distance = Vector3.Distance(_transform.position, barrack.transform.position);
             if (distance < minDistance)
@@ -93,7 +93,14 @@ public class Component_Check_Defender : ComponentBase
     }
     public bool NeedDefending()//Làm sau khi đến check của barrack
     {
-        return enemyDictionary.Count > 0;
+        foreach (Collider enemy in enemyDictionary.Keys)
+        {
+            if (enemyDictionary[enemy] == false)
+            {
+                return true;
+            }
+        }
+        return false;
     }
     private bool IsEnemyDictFull()
     {

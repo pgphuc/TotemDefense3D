@@ -13,32 +13,42 @@ public class State_RangedAttack_Enemy_Ranged : StateBase<EnemyRangedBase>
     public override void OnEnter()
     {
         base.OnEnter();
-        _unit._attackComponent._lastAttackTime = Time.time;
+        _unit._attackComponent.StartRangeAttack();
+        _unit.InvokeEnterAttack();
     }
 
     public override void OnExit()
     {
         base.OnExit();
         _unit._attackComponent.StopAttacking();
+        _unit.InvokeExitAttack();
     }
 
     public override void OnFrameUpdate()
     {
         base.OnFrameUpdate();
-        if (_unit._attackComponent._attackTarget == null || !_unit._attackComponent._attackTarget._isActive)
+        if (_unit._attackComponent._attackTarget == null || _unit._attackComponent._attackTarget._isActive == false)
         {
             _unit.StateMachine.ChangeState(_unit.MoveState); // Quay lại tuần tra nếu không có mục tiêu
         }
-        else if (Time.time - _unit._attackComponent._lastAttackTime >= _unit._attackComponent._attackSpeed)
+        else if (_unit._attackComponent.FinishCooldown())
         {
-            _unit._attackComponent._lastAttackTime = Time.time;
             _unit._attackComponent.RangedAttack();
         }
+        else if (_unit._moveComponent.ReadyToMeleeAttackMinion())
+        {
+            _unit.StateMachine.ChangeState(_unit.MeleeAttackState);
+        }
+        
     }
 
     public override void OnPhysicsUpdate()
     {
         base.OnPhysicsUpdate();
+        if (_unit._attackComponent.IsAttackingStructure() && _unit._checkComponent.HasMinionInRange())
+        {
+            _unit._attackComponent.StartRangeAttack();
+        }
     }
 
     public override void AnimationTriggerEvent(GameUnit.AnimationTriggerType triggerType)

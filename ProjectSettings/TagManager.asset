@@ -17,6 +17,8 @@ TagManager:
   - BarrackReinforceCheck
   - TerritoryGrid
   - Ground
+  - Fire
+  - Barrack
   layers:
   - Default
   - TransparentFX

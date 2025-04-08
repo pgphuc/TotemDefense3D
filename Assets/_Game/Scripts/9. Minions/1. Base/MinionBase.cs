@@ -23,11 +23,7 @@ public class MinionBase : GameUnit
     
     #endregion
 
-    public override void OnInit()
-    {
-        base.OnInit();
-        _animator = GetComponentInChildren<Animator>();
-    }
+   
     public override void OnDespawn()
     {
         base.OnDespawn();

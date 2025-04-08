@@ -25,7 +25,7 @@ public class State_Idle_Village : StateBase<VillageBase>
         base.OnFrameUpdate();
         if (_unit._spawnerComponent.minionCount <=0)
             return;
-        if (_unit._spawnerComponent.NeedDefending())
+        if (_unit._checkComponent.NeedDefending())
         {
             _stateMachine.ChangeState(_unit._defendingState);
         }

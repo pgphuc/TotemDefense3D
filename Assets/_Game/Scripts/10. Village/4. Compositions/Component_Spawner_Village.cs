@@ -23,8 +23,8 @@ public class Component_Spawner_Village : Component_Spawner_Base
     
     // minion coroutine 
     private Coroutine _regenerateCoroutine;
-    public Coroutine _defendCoroutine;
-    public Coroutine _reinforcementCoroutine;
+    private Coroutine _defendCoroutine;
+    private Coroutine _reinforcementCoroutine;
     
     public override void OnInit()
     {
@@ -42,10 +42,6 @@ public class Component_Spawner_Village : Component_Spawner_Base
     
     #region Check minion Count
 
-    public bool NeedDefending()
-    {
-        return _village._checkComponent.enemyDictionary.Count > 0;
-    }
     public bool NeedReinforcing()
     {
         reinforcementNeeded = MapManager.Instance.NumberOfMinionRequired();

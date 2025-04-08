@@ -14,7 +14,6 @@ public class GameManager : Singleton<GameManager>
         PrePlay = 1,
         Playing = 2,
         GameOver = 3,
-        Paused = 4,
     }
     private GameState gameState;
     
@@ -61,10 +60,7 @@ public class GameManager : Singleton<GameManager>
                 break;
             case GameState.GameOver:
                 //TODO: Show màn hình kết thúc game Won/Lost
-                GamOverState();
-                break;
-            case GameState.Paused:
-                PausedState();
+                Invoke(nameof(GamOverState), 4f);
                 break;
         }
     }
@@ -99,12 +95,6 @@ public class GameManager : Singleton<GameManager>
         EnemyWaveManager.Instance.OnInit();
     }
 
-    private void PausedState()
-    {
-        Time.timeScale = 0;
-        OnPausedGame?.Invoke();
-    }
-
     private void GamOverState()
     {
         Time.timeScale = 0;
@@ -120,6 +110,7 @@ public class GameManager : Singleton<GameManager>
             SoundManager.Instance.PlaySoundOneShot(SoundManager.Instance.victory);
             UIManager.Instance.OpenUI<CanvasVictory>();
         }
+        CancelInvoke(); 
     }
 
     private void IsDefeated()
@@ -166,25 +157,24 @@ public class GameManager : Singleton<GameManager>
 
     public void PauseGame()
     {
-        ChangeState(GameState.Paused);
-    }
-
-    public bool IsInPlayingState()
-    {
-        return gameState == GameState.Playing;
+        if (gameState == GameState.Playing)
+        {
+            Time.timeScale = 0;
+            OnPausedGame?.Invoke();
+        }
     }
 
     public void ResumeGame()
     {
-        ChangeState(GameState.Playing);
-        if (gameState == GameState.Paused)
+        if (gameState == GameState.Playing)
         {
+            Time.timeScale = 1;
             OnResumeGame?.Invoke();
         }
     }
 
     public void GameOver()
-    {
+    {                                                                                     
         ChangeState(GameState.GameOver);
     }
 

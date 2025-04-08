@@ -1,38 +1,36 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.WSA;
 
 public class TerritoryGrid : MonoBehaviour
 {
-    public TerritoryState state;
-    public GridStructure gridStructure;
-    public int territoryID;
-    public Renderer gridRenderer;
+    [HideInInspector] public TerritoryState state;
+    [HideInInspector] public GridStructure gridStructure;
+    [HideInInspector] public bool isGreener;
+    [HideInInspector] public int territoryID;
     [HideInInspector] public bool isFullTotem = false;
+    [HideInInspector] public Material territoryMaterials;
     
-    public Material[] territoryMaterials;
-    
+    public Renderer gridRenderer;
+
     [SerializeField] private GameUnit _barrackPrefab;
-    private BarrackBase _barrack;
-    
     [SerializeField] private GameUnit _earthTotemPrefab;
     [SerializeField] private GameUnit _fireTotemPrefab;
     [SerializeField] private GameUnit _iceTotemPrefab;
     [SerializeField] private GameUnit _windTotemPrefab;
     [SerializeField] private GameUnit _lightningTotemPrefab;
+    
     private TotemBase _totem;
+    private BarrackBase _barrack;
 
     public void UnlockGrid()
     {
         state = TerritoryState.Unlocked;
-        gridRenderer.material = territoryMaterials[0];
+        gridRenderer.material = territoryMaterials;
     }
 
     public void BuildBarrack()
     {
         _barrack = SimplePool.Spawn<BarrackBase>(_barrackPrefab.poolType, transform.position, Quaternion.identity);
-        MapManager.Instance.BarrackNotFullList.Add(_barrack);
+        MapManager.Instance.BarrackList.Add(_barrack);
         _barrack.OnInit();
     }
 

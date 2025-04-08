@@ -48,11 +48,17 @@ public class Component_Check_Minion : ComponentBase
          float minDistance = float.MaxValue;
          foreach (Collider target in _targetsInRange)
          {
+             if (ComponentCache.GetGameUnit(target) is EnemyBombBase)
+                 continue;
              float distance = Vector3.Distance(_transform.position, target.transform.position);
              if (distance >= minDistance)
                  continue;
              minDistance = distance;
              targetCollider = target;
+         }
+         if (!targetCollider)
+         {
+             return (null, null, null);
          }
          return (ComponentCache.GetHealthComponent(targetCollider),
              ComponentCache.GetGameUnit(targetCollider),

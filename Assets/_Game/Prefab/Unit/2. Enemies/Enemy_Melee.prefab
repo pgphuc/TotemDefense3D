@@ -174,8 +174,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   poolType: 0
   goldAmount: 0
-  _animator: {fileID: 0}
-  health: 
+  _bulletSpawnPoint: {fileID: 0}
+  _animator: {fileID: 8453240119018575350}
 --- !u!1001 &8816895203263865568
 PrefabInstance:
   m_ObjectHideFlags: 0

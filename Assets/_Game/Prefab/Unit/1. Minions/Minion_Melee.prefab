@@ -172,10 +172,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaf2dded41d2a47489b963e169b1dbf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poolType: 1
+  poolType: 5
   minionType: 0
   movingType: 0
-  _animator: {fileID: 0}
+  _animator: {fileID: 840900517696302396}
+  currentHP: 
 --- !u!1001 &472017900817348500
 PrefabInstance:
   m_ObjectHideFlags: 0

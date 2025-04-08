@@ -4,11 +4,12 @@ using UnityEngine;
 
 public enum PoolType
 {
-    EnemyMelee,
+    EnemyMelee, EnemyRanged, EnemyBomb, EnemyGiant, EnemyFly,
     MinionMelee,
     Totem_Earth, Totem_Fire, Totem_Lightning, Totem_Wind, Totem_Ice,
     Totem_Bullet_Earth, Totem_Bullet_Fire, Totem_Bullet_Lightning, Totem_Bullet_Wind, Totem_Bullet_Ice,
-    Barrack
+    Barrack,
+    Enemy_Bullet,
 }
 public enum MinionType
 {

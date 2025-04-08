@@ -12,15 +12,13 @@ public class State_Attack_Enemy_Melee : StateBase<EnemyMeleeBase>
     public override void OnEnter()
     {
         base.OnEnter();
-        _unit._attackComponent.StartAttack();
-        _unit.InvokeEnterAttack();
+        _unit._attackComponent.StartMeleeAttack();
     }
 
     public override void OnExit()
     {
         base.OnExit();
         _unit._attackComponent.StopAttacking();
-        _unit.InvokeExitAttack();
     }
 
     public override void OnFrameUpdate()
@@ -40,9 +38,9 @@ public class State_Attack_Enemy_Melee : StateBase<EnemyMeleeBase>
     public override void OnPhysicsUpdate()
     {
         base.OnPhysicsUpdate();
-        if (_unit._attackComponent.IsAttackingVillage() && _unit._moveComponent.ReadyToAttackMinion())
+        if (_unit._attackComponent.IsAttackingStructure() && _unit._moveComponent.ReadyToMeleeAttackMinion())
         {
-            _unit._attackComponent.StartAttack();
+            _unit._attackComponent.StartMeleeAttack();
         }
     }
 

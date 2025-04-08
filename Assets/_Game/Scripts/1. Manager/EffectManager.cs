@@ -58,6 +58,11 @@ public class EffectManager : Singleton<EffectManager>
     {
         foreach (var pair in EffectDictionary)
         {
+            if (!pair.Key)
+            {
+                EffectDictionary.Remove(pair.Key);
+                continue;
+            }
             List<EffectBase> effectsToRemove = new List<EffectBase>();
             foreach (EffectBase effect in pair.Value)
             {

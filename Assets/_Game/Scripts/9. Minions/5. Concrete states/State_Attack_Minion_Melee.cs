@@ -11,7 +11,7 @@ public class State_Attack_Minion_Melee :StateBase<MinionMeleeBase>
     public override void OnEnter()
     {
         base.OnEnter();
-        _unit._attackComponent.StartAttack();
+        _unit._attackComponent.StartMeleeAttack();
     }
 
     public override void OnExit()

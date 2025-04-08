@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4615145254331116487}
   - component: {fileID: 2770133727792723465}
   - component: {fileID: 2832286128706447431}
-  - component: {fileID: 9058758553960944337}
+  - component: {fileID: -5936274754237585165}
   m_Layer: 0
   m_Name: EnemyPortal
   m_TagString: Untagged
@@ -84,7 +84,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &9058758553960944337
+--- !u!114 &-5936274754237585165
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -96,8 +96,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_OverrideArea: 1
-  m_Area: 1
+  m_OverrideArea: 0
+  m_Area: 0
   m_OverrideGenerateLinks: 0
   m_GenerateLinks: 0
   m_IgnoreFromBuild: 1

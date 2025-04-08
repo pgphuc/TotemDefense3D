@@ -24,13 +24,12 @@ public class State_MeleeAttack_Enemy_Ranged : StateBase<EnemyRangedBase>
     public override void OnFrameUpdate()
     {
         base.OnFrameUpdate();
-        if (_unit._attackComponent._attackTarget == null || !_unit._attackComponent._attackTarget._isActive)
+        if (_unit._attackComponent._attackTarget == null || _unit._attackComponent._attackTarget._isActive == false)
         {
             _unit.StateMachine.ChangeState(_unit.MoveState); // Quay lại tuần tra nếu không có mục tiêu
         }
-        else if (Time.time - _unit._attackComponent._lastAttackTime >= _unit._attackComponent._attackSpeed)
+        else if (_unit._attackComponent.FinishCooldown())
         {
-            _unit._attackComponent._lastAttackTime = Time.time;
             _unit._attackComponent.MeleeAttack();
         }
     }

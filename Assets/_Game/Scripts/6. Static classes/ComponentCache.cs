@@ -36,6 +36,16 @@ public static class ComponentCache
         return GameUnitCache[collider];
     }
     
+    private static Dictionary<Collider, MinionBase> MinionCache = new Dictionary<Collider, MinionBase>();
+    public static MinionBase GetMinion(Collider collider)
+    {
+        if (!MinionCache.ContainsKey(collider))
+        {
+            MinionCache[collider] = collider.GetComponent<MinionBase>();
+        }
+        return MinionCache[collider];
+    }
+    
     //Component_Health
     private static Dictionary<Collider, Component_Health> HealthCache = new Dictionary<Collider, Component_Health>();
     public static Component_Health GetHealthComponent(Collider collider)

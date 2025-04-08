@@ -24,20 +24,15 @@ public class State_Move_Enemy_Ranged : StateBase<EnemyRangedBase>
     public override void OnFrameUpdate()
     {
         base.OnFrameUpdate();
-        // _unit._moveComponent.Moving();
-        // // if (!_unit._attackComponent._target || !_unit._attackComponent._target._isActive)
-        // // {
-        // //     _unit._attackRangedCheck.HandleExit();
-        // //     _unit._attackMeleeCheck.HandleExit();
-        // // }
-        // if (_unit._attackMeleeCheck.IsOwnerInCheck)
-        // {
-        //     _unit.StateMachine.ChangeState(_unit.MeleeAttackState);//Đánh cận chiến
-        // }
-        // else if (_unit._attackRangedCheck.IsOwnerInCheck)
-        // {
-        //     _unit.StateMachine.ChangeState(_unit.RangedAttackState);//Đánh xa
-        // }
+        _unit._moveComponent.Moving();
+        if (_unit._checkComponent.HasTargetInRange())
+        {
+            _unit.StateMachine.ChangeState(_unit.RangedAttackState);
+        }
+        else if (_unit._moveComponent.ReadyToMeleeAttackMinion())
+        {
+            _unit.StateMachine.ChangeState(_unit.MeleeAttackState);
+        }
     }
 
     public override void OnPhysicsUpdate()

@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 7432116334930417403}
   - component: {fileID: 3932792616840991904}
   - component: {fileID: 1154908639250699196}
-  - component: {fileID: 3580959219093613706}
   - component: {fileID: -529902457358756207}
+  - component: {fileID: 5109087992543500500}
   m_Layer: 3
   m_Name: TerritoryGrid
   m_TagString: TerritoryGrid
@@ -107,35 +107,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3580959219093613706
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3652593679049849050}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b75a314b2c43df04c94bb29eba2dff0b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  state: 0
-  gridStructure: 0
-  territoryID: 0
-  gridRenderer: {fileID: 3932792616840991904}
-  isFullTotem: 0
-  territoryMaterials:
-  - {fileID: 2100000, guid: 7fd9802ad5d9ee94293f305ad92553c7, type: 2}
-  - {fileID: 2100000, guid: c8ef4c6d1048aa144be9895be062a969, type: 2}
-  - {fileID: 2100000, guid: bf86949e25b934c42862fcb2d4aa9682, type: 2}
-  - {fileID: 2100000, guid: e5cd0a66fc4ed8e41824d43ffa6f8534, type: 2}
-  - {fileID: 2100000, guid: b715f4eee61fe6e409506deb7d9b9a47, type: 2}
-  _barrackPrefab: {fileID: 5581469206366702115, guid: 2d81bffe476785b45bc21776ce016cc6, type: 3}
-  _earthTotemPrefab: {fileID: 6238353390272594525, guid: 5d5734137f059c74f936b9e1682d2b06, type: 3}
-  _fireTotemPrefab: {fileID: 8087183732852077809, guid: e92dfc0eeb9c8a54ebcdbd11f9945871, type: 3}
-  _iceTotemPrefab: {fileID: 3685188578591212717, guid: 3ed97861db4a9694b82f5dbdaff52862, type: 3}
-  _windTotemPrefab: {fileID: 4081940862073990171, guid: a7043b93d11f1874c92a11bd33a1aa7d, type: 3}
-  _lightningTotemPrefab: {fileID: 966717197302327330, guid: a79d6647cce75d74f9f016e9efff020c, type: 3}
 --- !u!114 &-529902457358756207
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155,3 +126,28 @@ MonoBehaviour:
   m_IgnoreFromBuild: 0
   m_ApplyToChildren: 1
   m_AffectedAgents: ffffffff
+--- !u!114 &5109087992543500500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3652593679049849050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8043264be1e2a1b4ea05a3120b16bb1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  state: 0
+  gridStructure: 0
+  isGreener: 0
+  territoryID: 0
+  isFullTotem: 0
+  territoryMaterials: {fileID: 0}
+  gridRenderer: {fileID: 3932792616840991904}
+  _barrackPrefab: {fileID: 5581469206366702115, guid: 2d81bffe476785b45bc21776ce016cc6, type: 3}
+  _earthTotemPrefab: {fileID: 6238353390272594525, guid: 5d5734137f059c74f936b9e1682d2b06, type: 3}
+  _fireTotemPrefab: {fileID: 8087183732852077809, guid: e92dfc0eeb9c8a54ebcdbd11f9945871, type: 3}
+  _iceTotemPrefab: {fileID: 3685188578591212717, guid: 3ed97861db4a9694b82f5dbdaff52862, type: 3}
+  _windTotemPrefab: {fileID: 4081940862073990171, guid: a7043b93d11f1874c92a11bd33a1aa7d, type: 3}
+  _lightningTotemPrefab: {fileID: 966717197302327330, guid: a79d6647cce75d74f9f016e9efff020c, type: 3}

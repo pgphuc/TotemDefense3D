@@ -6,6 +6,7 @@ using UnityEngine;
 public class EnemyBase : GameUnit
 {
     public int goldAmount;
+    public Transform _bulletSpawnPoint;
 
     #region Serialized Fields
 
@@ -13,16 +14,12 @@ public class EnemyBase : GameUnit
     public Component_Health _healthComponent;
     public Component_Attack_Enemy _attackComponent;
     public Component_Move_Enemy _moveComponent;
+    public Component_Check_EnemyRanged _checkComponent;
     
     //animator
     public Animator _animator;
     #endregion
 
-    public override void OnInit()
-    {
-        base.OnInit();
-        _animator = GetComponentInChildren<Animator>();
-    }
 
     public override void OnDespawn()
     {

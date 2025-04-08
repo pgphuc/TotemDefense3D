@@ -67,7 +67,7 @@ GameObject:
   - component: {fileID: 5581469206366702115}
   m_Layer: 0
   m_Name: Barrack
-  m_TagString: Untagged
+  m_TagString: Barrack
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -151,7 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7237b37178bd5b54da6e1e4134aeae1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poolType: 12
+  poolType: 16
   _minionMeleePrefab: {fileID: 7630506222973659309, guid: bdc4125d660e6324ea82ebc73d3d9b27, type: 3}
 --- !u!1001 &2118235462029462613
 PrefabInstance:

@@ -107,13 +107,18 @@ public class PlayerInteraction : Singleton<PlayerInteraction>
         enemy.OnDeath += HandleEnemyDeath;
     }
 
+    public void UnSubcribeEnemyOnDeath(GameUnit enemy)
+    {
+        enemy.OnDeath -= HandleEnemyDeath;
+    }
+
     private void HandleEnemyDeath(GameUnit unit)
     {
         if (unit is EnemyBase enemy)
         {
             GoldAmount += enemy.goldAmount;
             OnGoldAmountChanged?.Invoke(GoldAmount);
-            unit.OnDeath -= HandleEnemyDeath;
+            UnSubcribeEnemyOnDeath(enemy);
         }
         
     }

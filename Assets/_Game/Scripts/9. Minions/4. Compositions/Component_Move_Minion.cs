@@ -59,7 +59,8 @@ public class Component_Move_Minion :ComponentBase, IComponentMove
     public Vector3 FindDestination()
     {
         Vector3 destination = Vector3.zero;
-        if (_owner._checkComponent._isFindingUnblockedEnemy || _owner._checkComponent.HasAvailableTarget())
+        if ((_owner._checkComponent._isFindingUnblockedEnemy && _owner._checkComponent.HasAvailableTarget())||
+            _owner._checkComponent.HasAvailableTarget())
         {
             _isMovingToEnemy = true;
             ValueTuple<Component_Health, GameUnit, Component_Move_Enemy> targetTuple = _owner._checkComponent.FindNearstTarget();
@@ -75,15 +76,11 @@ public class Component_Move_Minion :ComponentBase, IComponentMove
                 case MovingType.Reinforcing:
                     destination = FindBarrackAvailable();
                     break;
-                case MovingType.Defending:
-                    if (_dualingTarget != null)
-                    {
-                        destination = _dualingTarget._transform.position;
-                    }
-                    else
-                    {
-                        destination = _owner.minionType == MinionType.Barrack ? BackToBarrack() : BackToVillage();
-                    }
+                case MovingType.Defending when _dualingTarget != null:
+                    destination = _dualingTarget._transform.position;
+                    break;
+                default:
+                    destination = _owner.minionType == MinionType.Barrack ? BackToBarrack() : BackToVillage();
                     break;
             }
         }
@@ -101,7 +98,7 @@ public class Component_Move_Minion :ComponentBase, IComponentMove
         if (!hasBarrackAvailable)
             return movePosition;
         float minDistance = float.MaxValue;
-        foreach (BarrackBase barrack in MapManager.Instance.BarrackNotFullList)
+        foreach (BarrackBase barrack in MapManager.Instance.BarrackList)
         {
             float distance = Vector3.Distance(_owner.transform.position, barrack.transform.position);
             if (distance >= minDistance)

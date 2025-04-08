@@ -26,7 +26,7 @@ public class State_Defending_Village : StateBase<VillageBase>
     public override void OnFrameUpdate()
     {
         base.OnFrameUpdate();
-        if (!_unit._spawnerComponent.NeedDefending())
+        if (!_unit._checkComponent.NeedDefending())
         {
             _stateMachine.ChangeState(_unit._idleState);
         }

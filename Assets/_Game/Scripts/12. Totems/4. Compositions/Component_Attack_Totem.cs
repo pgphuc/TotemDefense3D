@@ -41,7 +41,7 @@ public class Component_Attack_Totem : ComponentBase, IComponentAttack
         return Time.time - _lastAttackTime >= _attackSpeed;
     }
 
-    public void StartAttack()
+    public void StartMeleeAttack()
     {
         _attackTarget = _owner._checkComponent.FindNearestEnemy();
     }
@@ -58,7 +58,7 @@ public class Component_Attack_Totem : ComponentBase, IComponentAttack
     
     
     #region Bullet implementation
-    private BulletBase _bullet;
+    private TotemBullet _bullet;
     private Transform _bulletSpawnPoint;
     
     private void ShootBullet(Vector3 start, Vector3 end)
@@ -67,7 +67,7 @@ public class Component_Attack_Totem : ComponentBase, IComponentAttack
     }
     private void GenerateBullet()
     {
-        _bullet = SimplePool.Spawn<BulletBase>(_owner._bulletPrefab.poolType, _bulletSpawnPoint.position, _owner.transform.rotation);
+        _bullet = SimplePool.Spawn<TotemBullet>(_owner._bulletPrefab.poolType, _bulletSpawnPoint.position, _owner.transform.rotation);
         _bullet._totemAttackComponent = this;
         _bullet.OnInit();
     }

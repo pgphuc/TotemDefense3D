@@ -80,7 +80,7 @@ public class TotemBase : GameUnit
     #region event implementation
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.CompareTag("MeleeEnemy") && !other.CompareTag("RangedEnemy"))
+        if (!other.CompareTag("MeleeEnemy") && !other.CompareTag("BomberEnemy"))
             return;
         _checkComponent.HandleEnemyEnter(other);
         SubcribeAllEvents(ComponentCache.GetGameUnit(other));
@@ -88,7 +88,7 @@ public class TotemBase : GameUnit
 
     private void OnTriggerExit(Collider other)
     {
-        if (!other.CompareTag("MeleeEnemy") && !other.CompareTag("RangedEnemy"))
+        if (!other.CompareTag("MeleeEnemy") && !other.CompareTag("BomberEnemy"))
             return;
         _checkComponent.HandleEnemyExit(other);
         UnSubcribeAllEvents(ComponentCache.GetGameUnit(other));

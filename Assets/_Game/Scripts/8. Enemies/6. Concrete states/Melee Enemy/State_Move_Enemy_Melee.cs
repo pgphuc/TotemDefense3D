@@ -29,12 +29,12 @@ public class State_Move_Enemy_Melee : StateBase<EnemyMeleeBase>
         {
             _unit._moveComponent.StartMoving();
         }
-        else if (_unit._moveComponent.ReadyToAttackBase())
+        else if (_unit._moveComponent.ReadyToMeleeAttackBase())
         {
             _unit._moveComponent.OccupiedAttackPoint();
             _unit.StateMachine.ChangeState(_unit.AttackState);
         }
-        else if (_unit._moveComponent.ReadyToAttackMinion())
+        else if (_unit._moveComponent.ReadyToMeleeAttackMinion())
         {
             _unit.StateMachine.ChangeState(_unit.AttackState);
         }

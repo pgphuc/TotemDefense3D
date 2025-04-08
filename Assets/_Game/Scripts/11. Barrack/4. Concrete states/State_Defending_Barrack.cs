@@ -37,7 +37,7 @@ public class State_Defending_Barrack : StateBase<BarrackBase>
         base.OnPhysicsUpdate();
         if (_unit._spawnerComponent._defendCoroutine != null)
             return;
-        if (_unit._spawnerComponent.BarrackHasMinion())
+        if (_unit._spawnerComponent.BarrackHasMinion() && _unit._checkComponent.NeedDefending())
         {
             _unit._spawnerComponent.DefendingBarrack();
         }

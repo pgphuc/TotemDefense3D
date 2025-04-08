@@ -85,6 +85,7 @@ public class BarrackBase : GameUnit
         _checkComponent = new Component_Check_Defender(transform, _spawnerComponent);
         components.Add(_checkComponent);
         _healthComponent = new Component_Health(this, transform, 1f);
+        components.Add(_healthComponent);
     }
 
     public override void OnInit()
@@ -100,6 +101,12 @@ public class BarrackBase : GameUnit
         _spawnerComponent.OnInit();
         _checkComponent.OnInit();
         _healthComponent.OnInit();
+    }
+
+    public override void OnDespawn()
+    {
+        MapManager.Instance.BarrackList.Remove(this);
+        base.OnDespawn();
     }
     
     #endregion

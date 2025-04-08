@@ -67,10 +67,16 @@ public class GameUnit : MonoBehaviour
             switch (comp)
             {
                 case Component_Move_Enemy enemy:
-                    enemy._agent.isStopped = true;
+                    if (enemy._agent.isOnNavMesh)
+                    {
+                        enemy._agent.isStopped = true;
+                    }
                     return;
                 case Component_Move_Minion minion:
-                    minion._agent.isStopped = true;
+                    if (minion._agent.isOnNavMesh)
+                    {
+                        minion._agent.isStopped = true;
+                    }
                     return;
             }
         }

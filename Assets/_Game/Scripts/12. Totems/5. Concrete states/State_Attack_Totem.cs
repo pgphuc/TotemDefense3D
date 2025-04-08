@@ -14,7 +14,7 @@ public class State_Attack_Totem : StateBase<TotemBase>
         base.OnEnter();
         //TODO: Change anim/sound/...
         //TODO: start charging or calculate bullet path
-        _unit._attackComponent.StartAttack();
+        _unit._attackComponent.StartMeleeAttack();
     }
 
     public override void OnExit()

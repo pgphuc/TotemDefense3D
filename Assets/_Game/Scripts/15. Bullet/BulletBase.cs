@@ -5,13 +5,10 @@ using UnityEngine.Serialization;
 
 public class BulletBase : GameUnit
 {
-    public Component_Attack_Totem _totemAttackComponent;
-    private float _damage;
-    [SerializeField] private bool _isGrounded;
-
+    protected float _damage;
     protected float _speed;
     protected float _acceleration;
-    
+    protected bool _isGrounded;
 
     [SerializeField] protected List<Vector3> _bulletPath = new List<Vector3>();
     [SerializeField] protected int _currentPathIndex;
@@ -28,19 +25,16 @@ public class BulletBase : GameUnit
     }
 
 
-    private void OnTriggerEnter(Collider other)
+    #region GameUnit functions
+
+    public override void OnInit()
     {
-        if (_isGrounded)
-            return;
-        if (other.CompareTag("MeleeEnemy") || other.CompareTag("RangedEnemy"))
-        {
-            HandleBulletHit(other);
-        }
-        else if (other.CompareTag("Ground"))
-        {
-            _isGrounded = true;
-        }
+        base.OnInit();
+        _currentPathIndex = 0;
+        _isGrounded = false;
+        _bulletPath.Clear();
     }
+    #endregion
 
     protected virtual void HandleBulletHit(Collider other)
     {
@@ -49,18 +43,5 @@ public class BulletBase : GameUnit
     }
 
 
-    #region GameUnit implementation
-
-    public override void OnInit()
-    {
-        _damage = _totemAttackComponent._damage;
-        _speed = _totemAttackComponent._bulletSpeed;
-        _acceleration = _totemAttackComponent._bulletAcceleration;
-        _currentPathIndex = 0;
-        _isGrounded = false;
-        _bulletPath.Clear();
-
-    }
-
-    #endregion
+    
 }

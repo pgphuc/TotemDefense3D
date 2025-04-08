@@ -4987,7 +4987,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31b1a8fdee34e6b429679000e958fed6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poolType: 5
+  poolType: 9
   _bulletPrefab: {fileID: 1278886229192013488, guid: 66e5b3a4c9b902f4fbe2cdc09be81ae0, type: 3}
   _bulletSpawnPoint: {fileID: 1034538973255140460}
 --- !u!1 &3994758562206882328

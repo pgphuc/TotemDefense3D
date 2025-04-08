@@ -9,24 +9,24 @@ public class Component_Check_EnemyRanged : ComponentBase
         _owner = owner;
     }
     private EnemyBase _owner;
-    private List<Collider> minionInRange = new List<Collider>();
+    private List<Collider> targetInRange = new List<Collider>();
     public override void OnInit()
     {
         base.OnInit();
-        minionInRange.Clear();
+        targetInRange.Clear();
     }
     public void HandleEnter(Collider minion)
     {
-        if (!minionInRange.Contains(minion))
+        if (!targetInRange.Contains(minion))
         {
-            minionInRange.Add(minion);
+            targetInRange.Add(minion);
         }
     }
     public void HandleExit(Collider minion)
     {
-        if (minionInRange.Contains(minion))
+        if (targetInRange.Contains(minion))
         {
-            minionInRange.Remove(minion);
+            targetInRange.Remove(minion);
         }
         if (_owner._attackComponent.EnemyKilledByOwner(minion))
         {
@@ -34,16 +34,29 @@ public class Component_Check_EnemyRanged : ComponentBase
         }
     }
 
+    public bool HasTargetInRange()
+    {
+        return targetInRange.Count > 0;
+    }
+
     public bool HasMinionInRange()
     {
-        return minionInRange.Count > 0;
+        for (int i = 0; i < targetInRange.Count; i++)
+        {
+            var target = ComponentCache.GetMinion(targetInRange[i]);
+            if (target)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Component_Health FindNearestEnemy()
     {
         Collider target = null;
         float minDistance = float.MaxValue;
-        foreach (Collider minion in minionInRange)
+        foreach (Collider minion in targetInRange)
         {
             float distance = Vector3.Distance(_owner.transform.position, minion.transform.position);
             if (distance < minDistance)

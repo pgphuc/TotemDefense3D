@@ -102,12 +102,17 @@ public class EnemyWaveManager : Singleton<EnemyWaveManager>
         
         for (int i = 0; i < quantity; i++)
         {
-            EnemyBase enemy = SimplePool.Spawn<EnemyMeleeBase>(unit.poolType, spawnPosition, Quaternion.identity);
-            enemy.OnInit();
-            enemyOnScene.Add(enemy);
-            totalEnemiesSpawned++;
-            EnemySpawned?.Invoke(enemy);
+            SpawnEnemy(unit, spawnPosition);
             yield return new WaitForSeconds(delaySpawnTime);
         }
+    }
+
+    private void SpawnEnemy(GameUnit unit, Vector3 spawnPosition)
+    {
+        EnemyBase enemy = SimplePool.Spawn<EnemyBase>(unit.poolType, spawnPosition, Quaternion.identity);
+        enemy.OnInit();
+        enemyOnScene.Add(enemy);
+        totalEnemiesSpawned++;
+        EnemySpawned?.Invoke(enemy);
     }
 }

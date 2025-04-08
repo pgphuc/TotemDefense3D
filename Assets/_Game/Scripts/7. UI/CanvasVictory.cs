@@ -5,12 +5,6 @@ using UnityEngine;
 
 public class CanvasVictory : UICanvas
 {
-    [SerializeField] TextMeshProUGUI ScoreText;
-
-    public void UpdateScore(int score)
-    {
-        ScoreText.text = score.ToString();
-    }
     public void MainMenuButton()
     {
         CloseDirectly();

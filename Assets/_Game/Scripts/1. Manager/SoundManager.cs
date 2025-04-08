@@ -1,10 +1,13 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Audio;
+using UnityEngine.UI;
 
 public class SoundManager : Singleton<SoundManager>
 {
-
     public AudioSource musicSource;
+    public float sfxVolume;
 
     public AudioClip bgMusic;
     public AudioClip bossMusic;
@@ -15,13 +18,42 @@ public class SoundManager : Singleton<SoundManager>
     public AudioClip villageDamaged;
     public AudioClip victory;
     public AudioClip defeated;
+    
+    public AudioClip onClickButton;
 
     private void Start()
     {
-        musicSource = gameObject.AddComponent<AudioSource>();
-        musicSource.loop = true;
+        LoadVolume();
         PlayMusic(bgMusic);
     }
+
+    private void LoadVolume()
+    {
+        float savedVolume = PlayerPrefs.GetFloat("Volume", 1f);//Mặc định lấy 1f
+        musicSource.volume = savedVolume;
+        sfxVolume = savedVolume;
+    }
+
+    public void SetMusicVolume(float value)
+    {
+        musicSource.volume = value;
+        PlayerPrefs.SetFloat("Volume", value); // Lưu lại
+    }
+    public float GetMusicVolume()
+    {
+        return musicSource.volume;
+    }
+
+    public void SetSfxVolume(float value)
+    {
+        sfxVolume = value;
+        PlayerPrefs.SetFloat("Volume", value); // Lưu lại
+    }
+    public float GetSfxVolume()
+    {
+        return sfxVolume;
+    }
+    
 
     public void PlayMusic(AudioClip clip, float fadeTime = 1.5f)
     {
@@ -40,14 +72,14 @@ public class SoundManager : Singleton<SoundManager>
         if (musicSource.isPlaying) yield return FadeOutMusic(fadeTime);
 
         musicSource.clip = clip;
-        musicSource.volume = 0;
+        float savedVolumn = GetMusicVolume();
         musicSource.Play();
 
         float t = 0;
         while (t < fadeTime)
         {
             t += Time.deltaTime;
-            musicSource.volume = Mathf.Lerp(0, 1, t / fadeTime);
+            musicSource.volume = Mathf.Lerp(0, savedVolumn, t / fadeTime);
             yield return null;
         }
     }
@@ -69,11 +101,11 @@ public class SoundManager : Singleton<SoundManager>
 
     public void PlaySoundOneShot(AudioClip clip)
     {
-        
         GameObject tempAudioObject = new GameObject("TempAudioSource");
+        tempAudioObject.transform.SetParent(transform);
+        
         AudioSource audioSource = tempAudioObject.AddComponent<AudioSource>();
-
-        audioSource.volume = 2f;
+        audioSource.volume = GetSfxVolume();
         audioSource.clip = clip;
         audioSource.spatialBlend = 0f;
         audioSource.PlayOneShot(clip);

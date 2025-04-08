@@ -21,9 +21,13 @@ public class Component_Attack_Minion :ComponentBase, IComponentAttack
     public float _attackSpeed { get; set; }
     
 
-    public void StartAttack()
+    public void StartMeleeAttack()
     {
         _attackTarget = _owner._moveComponent._dualingTarget;
+        _owner._moveComponent._dualingTarget = null;
+        
+        RotateOwnerToTarget();
+        
         _lastAttackTime = Time.time - _attackSpeed;
         if (_attackTarget._isBlocked)
         {
@@ -35,6 +39,14 @@ public class Component_Attack_Minion :ComponentBase, IComponentAttack
             _attackTarget._isBlocked = true;
             _owner._checkComponent._isFindingUnblockedEnemy = false;
         }
+    }
+
+    private void RotateOwnerToTarget()
+    {
+        float rotateSpeed = 100f; // độ xoay mỗi giây
+        Vector3 direction = _attackTarget._transform.position - _owner.transform.position;
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        _owner.transform.rotation = Quaternion.RotateTowards(_owner.transform.rotation, targetRotation, rotateSpeed * Time.deltaTime);
     }
     public void MeleeAttack()
     {

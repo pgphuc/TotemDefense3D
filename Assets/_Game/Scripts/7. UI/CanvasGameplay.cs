@@ -21,7 +21,6 @@ public class CanvasGameplay : UICanvas
     
     private TerritoryGrid selectedTerritoryGrid;
     private Renderer componentRenderer;
-    private Color? originalColor;
 
     private bool isShoping;
     #endregion
@@ -101,7 +100,7 @@ public class CanvasGameplay : UICanvas
                  * 2. Thông tin barrack
                  * 3. Nút bán barrack
                  */
-                ChangeColorOnSelect(grid);
+                ChangeColor(grid);
                 break;
             }
             case GridStructure.Totem:
@@ -124,7 +123,7 @@ public class CanvasGameplay : UICanvas
                  * 1. Thông tin totem
                  * 2. Nút bán totem
                  */
-                ChangeColorOnSelect(grid);
+                ChangeColor(grid);
                 break;
             }
         }
@@ -140,7 +139,7 @@ public class CanvasGameplay : UICanvas
                 ActiveButton(territoryButton);
                 foreach (TerritoryGrid territoryGrid in MapManager.gridDictionary[grid.territoryID])
                 {
-                    ChangeColorOnSelect(territoryGrid);
+                    ChangeColor(territoryGrid);
                 }
                 break;
             }
@@ -152,24 +151,21 @@ public class CanvasGameplay : UICanvas
                 {
                     ActiveButton(button);
                 }
-                ChangeColorOnSelect(grid);
+                ChangeColor(grid);
                 break;
             }
         }
     }
-    private void ChangeColorOnSelect(TerritoryGrid grid)
+    private void ChangeColor(TerritoryGrid grid)
     {
-        componentRenderer = ComponentCache.GetGridRenderer(grid);
-        originalColor ??= componentRenderer.material.color;//Nếu null thì lấy giá trị gán vô, không thì giữ nguyên
-        componentRenderer.material.color = (Color)originalColor * 1.5f;
+        componentRenderer = ComponentCache.GetGridRenderer(grid); 
+        componentRenderer.material.color *= 1.5f;
     }
 
     private void ChangeToOriginalColor(TerritoryGrid grid)
     {
-        if (originalColor == null)
-            return;
         componentRenderer = ComponentCache.GetGridRenderer(grid);
-        componentRenderer.material.color = (Color)originalColor; // Trả lại màu gốc
+        componentRenderer.material.color /= 1.5f; // Trả lại màu gốc
     }
 
     private void HideTerritoryPanel(TerritoryGrid grid)
@@ -193,7 +189,6 @@ public class CanvasGameplay : UICanvas
         {
             ChangeToOriginalColor(grid);
         }
-        originalColor = null;
     }
 
     private void DeactiveAllButton()
@@ -215,10 +210,7 @@ public class CanvasGameplay : UICanvas
     public void SettingsButton()
     {
         UIManager.Instance.OpenUI<CanvasSettings>().SetState(this);
-        if (GameManager.Instance.IsInPlayingState())
-        {
-            GameManager.Instance.PauseGame();
-        }
+        GameManager.Instance.PauseGame();
     }
 
     public void StartWaveButton()
@@ -234,7 +226,6 @@ public class CanvasGameplay : UICanvas
     {
         PlayerInteraction.Instance.checkInfoGrid = null;
         HideTerritoryPanel(selectedTerritoryGrid);
-        originalColor = null;
     }
 
     public void BuyTerritoryButton()
